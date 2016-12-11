@@ -1,0 +1,19 @@
+﻿<Application x:Class="TestAppW.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TestAppW"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Button.Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" Direction="320" ShadowDepth="1" BlurRadius="3" Opacity="0.5" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Border.CornerRadius" Value="3,3,3,3" />
+        </Style>
+    </Application.Resources>
+</Application>
