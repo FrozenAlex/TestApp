@@ -1,9 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using TestModel;
+using TestApp.Methods;
 
 namespace TestApp
 {
@@ -18,14 +19,13 @@ namespace TestApp
         {
             get
             {
-                return test.questions[current-1]; // current is a little bigger
+                return test.Questions[current-1]; // current is a little bigger
             }
             set
             {
-                test.questions[current] = value;
+                test.Questions[current] = value;
             }
         } // Dat Question
-
         private DispatcherTimer timer = null;
         private ulong timeLeft;
 
@@ -55,21 +55,27 @@ namespace TestApp
         private void button_Click(object sender, RoutedEventArgs e)
         {
             test = new Test();
-            test.time = 3;
-            test.author = "Alex Brown";
-            test.encrypted = false;
-            test.name = "Demo Quiz";
+            test.Time = 3;
+            test.Author = "Alex Brown";
+            test.Encrypted = false;
+            test.Name = "Demo Quiz";
             for (int i = 0; i < 4; i++) { 
-                Question question = new Question("Question number "+i);
-                question.answers.Add(new Answer("Right", true));
-                question.answers.Add(new Answer("Right2", true));
-                question.answers.Add(new Answer("Wrong", false));
-                question.answers.Add(new Answer("Wrong2", false));
-                question.answers.Add(new Answer("Wrong3", false));
-                test.questions.Add(question);
+                TextQuestion question = new TextQuestion();
+                question.answers = new List<Answer>();
+                question.Text = "Holy cow #" + i;
+                Answer answer = new Answer();
+                answer.Text = "Totally right" + i;
+                answer.Right = true;
+                question.answers.Add(answer);
+                Answer wrong = new Answer();
+                wrong.Text = "Totally right in quotes" + i;
+                wrong.Right = true;
+                question.answers.Add(wrong);
+
+                test.Questions.Add(question);
             }
             
-            test.SaveToFile("D:\\xml.xml");
+            test.Save("D:\\xml.xml");
             test = null;
         }
         private void loadTest()
@@ -83,9 +89,10 @@ namespace TestApp
             //test = new Test(dlg.FileName);"D:\\xml.xml"
                 test = new Test("D:\\xml.xml");
                 current = 1;
-                this.Title = test.name;
-                timeLeft = test.time;
-                refresh();
+                this.Title = test.Name;
+                timeLeft = test.Time;
+                
+            refresh();
             //}
         }
         private void button1_Click(object sender, RoutedEventArgs e)
@@ -108,14 +115,11 @@ namespace TestApp
 
         private void refresh()
         {
-            DataContext = currentQuestion;
-           // listBox.ItemsSource = currentQuestion.answers;
-            //QuestionText.Text = currentQuestion.text;
-            //questionNum.Content = current;
             // Enable buttons
             prevButton.IsEnabled = (current > 1);
-            nextButton.IsEnabled = (current < test.questions.Count);
-    }
+            nextButton.IsEnabled = (current < test.Questions.Count);
+            DataContext = currentQuestion;
+        }
 
 
 
@@ -127,7 +131,14 @@ namespace TestApp
         private void GradeButton_Click(object sender, RoutedEventArgs e)
         {
             timeLabel.Content = test.Grade();
+        }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure?)","wwdww", MessageBoxButton.YesNo)==MessageBoxResult.No)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }
