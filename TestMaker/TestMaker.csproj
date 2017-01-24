@@ -69,7 +69,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\TestAppW\Models\Test.cs">
+    <Compile Include="..\TestAppW\Methods\Crypto.cs">
+      <Link>Crypto.cs</Link>
+    </Compile>
+    <Compile Include="..\TestAppW\Methods\Test.cs">
       <Link>Test.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs">

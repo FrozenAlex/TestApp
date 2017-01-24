@@ -11,7 +11,6 @@ namespace TestApp.Methods
     {
         public static byte[] Encrypt(byte[] data, string password)
         {
-            System.Security.Cryptography.
             SymmetricAlgorithm sa = Rijndael.Create();
             ICryptoTransform ct = sa.CreateEncryptor((new PasswordDeriveBytes(password, null)).GetBytes(16), new byte[16]);
             MemoryStream ms = new MemoryStream();

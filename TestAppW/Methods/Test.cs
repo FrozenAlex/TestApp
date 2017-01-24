@@ -6,43 +6,44 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.IO;
 using TestApp.Methods;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TestApp.Methods
 {
-
-    [XmlRoot("Test")]
-    [XmlInclude(typeof(Test))]
-    public partial class Test  // One set of questions
+    /// <summary>
+    /// Обьект тест 
+    /// </summary>
+    [XmlRoot("Test")]  // Установка имени корнегого элемента
+    [XmlInclude(typeof(Test))]  // Определение типа сериализации
+    public partial class Test  // Набор вопросов
     {
+        [XmlIgnore] // Игнорируем свойство при сериализации
+        private string Path; // Путь к тесту
         [XmlIgnore]
-        private string Path;
+        private string Password { get; set; } // Пароль к тесту. Используется только один раз) 
+        [XmlAttribute] // Аттрибут (<test аттрибут = 1>)
+        public ulong Id { get; set; } // Идентификатор
         [XmlAttribute]
-        public ulong Id { get; set; }
+        public ulong Time { get; set; } // Время на тест в секундах
         [XmlAttribute]
-        public ulong Time { get; set; }
-        [XmlAttribute]
-        public string Name { get; set; }
+        public string Name { get; set; }  // Название теста
         [XmlAttribute]
         public string Author { get; set; }
         [XmlAttribute]
         public bool Encrypted { get; set; }
 
-        [XmlArray("questions")]
-        [XmlArrayItem("question")]
-        public List<Question> Questions;
-    }
+        [XmlArray("questions")] // Установка имени массива в XML 
+        [XmlArrayItem("question")] // Установка названия элемента массива в XML
+        public List<Question> Questions; // Список вопросов
 
 
-
-    public partial class Test
-    {
         public Test()
         {
-            Questions = new List<Question>();
+            Questions = new List<Question>();  // Инициализируем пустой список ответов
         }
-        public Test(string filePath)
+        public Test(string filePath) 
         {
-            Questions = new List<Question>();
+            Questions = new List<Question>(); 
             LoadFromFile(filePath);
         }
         public Test(string filePath, string password)
@@ -51,59 +52,112 @@ namespace TestApp.Methods
             LoadFromFile(filePath);
         }
 
-        public int LoadFromFile(string path)
+        public int LoadFromFile(string path, string password = "ass") // 
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Test));
-            FileStream fs = new FileStream(path, FileMode.Open);
-            Test test = (Test)serializer.Deserialize(fs);
-
+            XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
+            FileStream fs = new FileStream(path, FileMode.Open); // Создание потока файла
+            var bytes = new byte[fs.Length];  // Создание массива байтов с размером равным размеру файла
+            fs.Read(bytes, 0, (int)fs.Length); // Копирование из файла в переменную bytes
+            var decriptedBytes = Crypt.Decrypt(bytes, password); // Расшифровка байтов 
+            var memoryStream = new MemoryStream(); // Создание потока в память
+            memoryStream.Write(decriptedBytes, 0, decriptedBytes.Length); // Запись в поток расшифрованных байтов
+            memoryStream.Seek(0, SeekOrigin.Begin); // перевод указателя на первый байт в потоке
+            Test test = (Test)serializer.Deserialize(memoryStream); // Десериализация расшифрованного теста из потока и импорт переменных
+            this.Password = password;
             this.Questions = test.Questions;
             this.Name = test.Name;
             this.Time = test.Time;
             this.Encrypted = test.Encrypted;
             this.Author = test.Author;
-            Path = path;
+            Path = path; 
             fs.Close();
             return 0;
         }
         public int Save(string path)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Test));
-            FileStream fs = new FileStream(path, FileMode.Create);
-            serializer.Serialize(fs, this);
-            fs.Close();
+            XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
+            FileStream fs = new FileStream(path, FileMode.Create); // Открытие потока на создание файла
+            var memoryStream = new MemoryStream(); // Создание потока памяти
+            serializer.Serialize(memoryStream, this); // Сериализация в поток 
+            memoryStream.Seek(0, SeekOrigin.Begin); // Переход на первый байт в потоке
+
+            var bytes = new byte[memoryStream.Length]; 
+            memoryStream.Read(bytes, 0, (int)memoryStream.Length); // Чтение байтов из потока
+
+            var encryptedBytes = Crypt.Encrypt(bytes, this.Password); // Шифрование байтов
+            fs.Write(encryptedBytes, 0, encryptedBytes.Length); // Запись в файл)
+            fs.Close(); // Закрытие файла
             return 0;
         }
         public int Save()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Test));
-            FileStream fs = new FileStream(Path, FileMode.Create);
-            serializer.Serialize(fs, this);
+            FileStream fs = new FileStream(this.Path, FileMode.Create);
+            var memoryStream = new MemoryStream();
+            serializer.Serialize(memoryStream, this);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var bytes = new byte[memoryStream.Length];
+            memoryStream.Read(bytes, 0, (int)memoryStream.Length);
+
+            var encryptedBytes = Crypt.Encrypt(bytes, this.Password);
+            fs.Write(encryptedBytes, 0, encryptedBytes.Length);
             fs.Close();
             return 0;
         }
         public int Grade()
         {
-            long grade = 0;
-            foreach (Question q in Questions) // Loop through all the questions
+            long max = 0; // Максимальное кол-во очков
+            long score = 0; // Кол-во очков
+            foreach (Question q in Questions) // Пробираю через все вопросы
             {
+                max += q.Cost; // Подсчет максимума баллов
                 int errors = 0;
-                foreach (Answer a in q.answers) // Loop through all the answers
-                {
-                    if (a.Right != a.Selected) errors++;
-                }
-                if (errors == 0) grade++;
+                if (q.Answers.Count == 1) if (q.Answers[0].Written == q.Answers[0].Text) errors++;
+                if (q.Answers.Count > 1) foreach (Answer a in q.Answers) if (a.Right != a.Selected) errors++;   
+                if (errors == 0) score += q.Cost;
             }
-            int ass = Questions.Count / 5;
-            if (grade < (Questions.Count / 5)) return 1;
-            if (grade < (Questions.Count / 4)) return 2;
-            if (grade < (Questions.Count / 3)) return 3;
-            if (grade < (Questions.Count)) return 4;
+            // TODO: Добавить больше оценок и возможно перейти на дробные значения
+            if (score < (max / 5)) return 1;
+            if (score < (max / 4)) return 2;
+            if (score < (max / 3)) return 3;
+            if (score < (max)) return 4;
             return 5;
         }
+
+        [XmlInclude(typeof(ImageQuestion))]
+        [XmlInclude(typeof(TextQuestion))]
+        public class Question
+        {
+            public Question() { }
+            [XmlArray]
+            public List<Answer> Answers { get; set; } // Список ответов
+            [XmlAttribute]
+            public int Cost { get; set; } // Стоимость вопроса
+            public string Text { get; set; } // Текст вопроса
+        }
+        public class TextQuestion : Question // Текстовый вопрос
+        {
+            public TextQuestion() { }
+        }
+        public class ImageQuestion : Question // Картиночный вопрос
+        {
+            public ImageQuestion() { }
+            [XmlAttribute]
+            public byte[] Image { get; set; }
+        }
+
+        public class Answer
+        {
+            public Answer() { }
+            [XmlIgnore]
+            public bool Selected { get; set; }
+            [XmlIgnore]
+            public string Written { get; set; }
+            public string Text { get; set; }
+            public bool Right { get; set; }
+        }
     }
-
-
 
 }
     

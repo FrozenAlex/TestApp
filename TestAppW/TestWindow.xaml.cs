@@ -62,9 +62,9 @@ namespace TestApp
             for (int i = 0; i < 4; i++) { 
                 TextQuestion question = new TextQuestion();
                 question.answers = new List<Answer>();
-                question.Text = "Holy cow #" + i;
+                question.Text = "Holy cow " + i;
                 Answer answer = new Answer();
-                answer.Text = "Totally right" + i;
+                answer.Text = "Totall right" + i;
                 answer.Right = true;
                 question.answers.Add(answer);
                 Answer wrong = new Answer();
@@ -75,25 +75,23 @@ namespace TestApp
                 test.Questions.Add(question);
             }
             
-            test.Save("D:\\xml.xml");
+            test.Save("D:\\xml.len");
             test = null;
         }
         private void loadTest()
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Вопросы (*.xml)|*.xml";
+            dlg.Filter = "Вопросы (*.len)|*.len";
             dlg.CheckFileExists = true;
             dlg.Multiselect = false;
-            //if (dlg.ShowDialog() == true)
-            //{
-            //test = new Test(dlg.FileName);"D:\\xml.xml"
-                test = new Test("D:\\xml.xml");
+            if (dlg.ShowDialog() == true)
+            {
+                test = new Test(dlg.FileName); // "D:\\xml.xml"
                 current = 1;
                 this.Title = test.Name;
                 timeLeft = test.Time;
-                
-            refresh();
-            //}
+                refresh();
+            }
         }
         private void button1_Click(object sender, RoutedEventArgs e)
         {
