@@ -5,11 +5,11 @@ using System.Text;
 using System.Xml.Serialization;
 using System.Xml;
 using System.IO;
-using TestApp.Methods;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TestApp.Methods
 {
+   
+
     /// <summary>
     /// Обьект тест 
     /// </summary>
@@ -17,6 +17,9 @@ namespace TestApp.Methods
     [XmlInclude(typeof(Test))]  // Определение типа сериализации
     public partial class Test  // Набор вопросов
     {
+        const string defaultPassword = "Ass";
+
+
         [XmlIgnore] // Игнорируем свойство при сериализации
         private string Path; // Путь к тесту
         [XmlIgnore]
@@ -52,7 +55,7 @@ namespace TestApp.Methods
             LoadFromFile(filePath);
         }
 
-        public int LoadFromFile(string path, string password = "ass") // 
+        public int LoadFromFile(string path, string password = "Ass") // 
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
             FileStream fs = new FileStream(path, FileMode.Open); // Создание потока файла
@@ -80,10 +83,9 @@ namespace TestApp.Methods
             var memoryStream = new MemoryStream(); // Создание потока памяти
             serializer.Serialize(memoryStream, this); // Сериализация в поток 
             memoryStream.Seek(0, SeekOrigin.Begin); // Переход на первый байт в потоке
-
             var bytes = new byte[memoryStream.Length]; 
             memoryStream.Read(bytes, 0, (int)memoryStream.Length); // Чтение байтов из потока
-
+            if (this.Password == null) this.Password = defaultPassword;
             var encryptedBytes = Crypt.Encrypt(bytes, this.Password); // Шифрование байтов
             fs.Write(encryptedBytes, 0, encryptedBytes.Length); // Запись в файл)
             fs.Close(); // Закрытие файла
@@ -105,59 +107,62 @@ namespace TestApp.Methods
             fs.Close();
             return 0;
         }
-        public int Grade()
+        public float Grade()
         {
-            long max = 0; // Максимальное кол-во очков
-            long score = 0; // Кол-во очков
+            float max = 0; // Максимальное кол-во очков
+            float score = 0; // Кол-во очков
             foreach (Question q in Questions) // Пробираю через все вопросы
             {
                 max += q.Cost; // Подсчет максимума баллов
                 int errors = 0;
                 if (q.Answers.Count == 1) if (q.Answers[0].Written == q.Answers[0].Text) errors++;
-                if (q.Answers.Count > 1) foreach (Answer a in q.Answers) if (a.Right != a.Selected) errors++;   
+                if (q.Answers.Count > 1)
+                {
+                    foreach (Answer a in q.Answers) {
+                        if (a.Right != a.Selected) errors++;
+                    }
+                } 
                 if (errors == 0) score += q.Cost;
             }
-            // TODO: Добавить больше оценок и возможно перейти на дробные значения
-            if (score < (max / 5)) return 1;
-            if (score < (max / 4)) return 2;
-            if (score < (max / 3)) return 3;
-            if (score < (max)) return 4;
-            return 5;
-        }
-
-        [XmlInclude(typeof(ImageQuestion))]
-        [XmlInclude(typeof(TextQuestion))]
-        public class Question
-        {
-            public Question() { }
-            [XmlArray]
-            public List<Answer> Answers { get; set; } // Список ответов
-            [XmlAttribute]
-            public int Cost { get; set; } // Стоимость вопроса
-            public string Text { get; set; } // Текст вопроса
-        }
-        public class TextQuestion : Question // Текстовый вопрос
-        {
-            public TextQuestion() { }
-        }
-        public class ImageQuestion : Question // Картиночный вопрос
-        {
-            public ImageQuestion() { }
-            [XmlAttribute]
-            public byte[] Image { get; set; }
-        }
-
-        public class Answer
-        {
-            public Answer() { }
-            [XmlIgnore]
-            public bool Selected { get; set; }
-            [XmlIgnore]
-            public string Written { get; set; }
-            public string Text { get; set; }
-            public bool Right { get; set; }
-        }
+            if (score == 0) return 0;
+            return ((max / 100) * score);
+        } 
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    [XmlInclude(typeof(ImageQuestion))]
+    [XmlInclude(typeof(TextQuestion))]
+    public class Question
+    {
+        public Question() { }
+        [XmlArray]
+        public List<Answer> Answers { get; set; } // Список ответов
+        [XmlAttribute]
+        public int Cost { get; set; } // Стоимость вопроса
+        public string Text { get; set; } // Текст вопроса
+    }
+    public class TextQuestion : Question // Текстовый вопрос
+    {
+        public TextQuestion() { }
+    }
+    public class ImageQuestion : Question // Картиночный вопрос
+    {
+        public ImageQuestion() { }
+        [XmlAttribute]
+        public byte[] Image { get; set; }
+    }
+
+    public class Answer
+    {
+        public Answer() { }
+        [XmlIgnore]
+        public bool Selected { get; set; }
+        [XmlIgnore]
+        public string Written { get; set; } // Чтото страшное)
+        public string Text { get; set; }
+        public bool Right { get; set; }
+    }
 }
     

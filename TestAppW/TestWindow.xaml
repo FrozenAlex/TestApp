@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestAppW"
         mc:Ignorable="d"
-        Title="Test App" Height="441" Width="598.667" BorderThickness="0" Closing="Window_Closing">
+        Title="Test App" Height="417" Width="616.667" BorderThickness="0" Closing="Window_Closing" Icon="SplashScreen1.png">
     <Window.Resources>
         <DataTemplate x:Key="AnswersTemplate">
             <Border Margin="1" BorderThickness="0" BorderBrush="Black" CornerRadius="1">
@@ -21,27 +21,28 @@
 
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="43*"/>
-            <RowDefinition Height="53*"/>
+            <RowDefinition Height="38*"/>
+            <RowDefinition Height="165*"/>
+            <RowDefinition Height="183*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition MaxWidth="200" Width="53*"/>
             <ColumnDefinition MinWidth="200" Width="538*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="SaveButton" Grid.Column="1" Content="Save" HorizontalAlignment="Left" Height="43" Margin="0,46,0,0" VerticalAlignment="Top" Width="48" Click="button_Click"/>
-        <Button x:Name="LoadButton" Grid.Column="1" Content="Load"  HorizontalAlignment="Left" Height="46" VerticalAlignment="Top" Width="48" Click="button1_Click"/>
-        <TextBox  x:Name="QuestionText" Grid.Column="2" Text="{Binding Path=.Text}" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" VerticalContentAlignment="Center"/>
+        <TextBox  x:Name="QuestionText" Grid.Column="2" Text="{Binding Path=.Text}" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" VerticalContentAlignment="Center" Grid.Row="1"/>
+        <Button x:Name="SaveButton" Grid.Column="2" Content="Save" HorizontalAlignment="Left" Width="61" Click="button_Click"/>
+        <Button x:Name="LoadButton" Grid.Column="1" Content="Load"  HorizontalAlignment="Left" Width="53" Click="button1_Click"/>
 
-        <ListBox ItemTemplate="{StaticResource AnswersTemplate}" x:Name="listBox" ItemsSource="{Binding answers, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Grid.Row="1"  Margin="4,33,0,0">
+        <ListBox ItemTemplate="{StaticResource AnswersTemplate}" x:Name="listBox" ItemsSource="{Binding Answers, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Grid.Row="2"  Margin="4,33,0,0">
         </ListBox>
-        <Canvas Margin="199,4,197,182" Grid.Row="1" Grid.Column="2">
-            <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="19" Click="button_Navigation" Height="20" Canvas.Left="47" Canvas.Top="4"/>
-            <Button x:Name="prevButton" Content="&lt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="19" Click="button_Navigation" Height="20" Canvas.Top="4"/>
+        <Canvas Margin="235,6,234,150" Grid.Row="2" Grid.Column="2">
+            <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="19" Click="button_Navigation" Height="20" Canvas.Left="47" Canvas.Top="4" IsEnabled="False"/>
+            <Button x:Name="prevButton" Content="&lt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="19" Click="button_Navigation" Height="20" Canvas.Top="4" IsEnabled="False"/>
             <Label x:Name="questionNum" Content="1" HorizontalContentAlignment="Center" Height="26" Width="28" Canvas.Left="19"/>
         </Canvas>
-        <Button x:Name="button1" Content="Begin Test" Grid.Column="1" HorizontalAlignment="Left" Height="39" Margin="0,89,0,0" VerticalAlignment="Top" Width="48" Click="button1_Click_1"/>
-        <Label x:Name="timeLabel" Content="Time: 22:20" Grid.Column="2" HorizontalAlignment="Left" Margin="352,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="70" Height="26"/>
-        <Button x:Name="GradeButton" Content="Button" HorizontalAlignment="Left" Margin="0,128,0,0" VerticalAlignment="Top" Width="48" Click="GradeButton_Click" Grid.Column="1" Height="46"/>
+        <Label x:Name="timeLabel" Content="Time: 22:20" Grid.Column="2" Margin="0,2,10,0" Grid.Row="2" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="70"/>
+        <Button x:Name="button1" Content="Begin Test" HorizontalAlignment="Left" Margin="61,0,0,0" Width="67" Click="button1_Click_1" Grid.Column="2"/>
+        <Button x:Name="GradeButton" Content="Grade" HorizontalAlignment="Left" Margin="128,0,0,0" Width="48" Click="GradeButton_Click" Grid.Column="2"/>
     </Grid>
 </Window>

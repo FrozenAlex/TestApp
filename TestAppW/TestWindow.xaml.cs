@@ -19,7 +19,7 @@ namespace TestApp
         {
             get
             {
-                return test.Questions[current-1]; // current is a little bigger
+                return test.Questions[current-1];
             }
             set
             {
@@ -61,16 +61,17 @@ namespace TestApp
             test.Name = "Demo Quiz";
             for (int i = 0; i < 4; i++) { 
                 TextQuestion question = new TextQuestion();
-                question.answers = new List<Answer>();
+                question.Answers = new List<Answer>();
+                question.Cost = i+1;
                 question.Text = "Holy cow " + i;
                 Answer answer = new Answer();
                 answer.Text = "Totall right" + i;
                 answer.Right = true;
-                question.answers.Add(answer);
+                question.Answers.Add(answer);
                 Answer wrong = new Answer();
                 wrong.Text = "Totally right in quotes" + i;
-                wrong.Right = true;
-                question.answers.Add(wrong);
+                wrong.Right = false;
+                question.Answers.Add(wrong);
 
                 test.Questions.Add(question);
             }
@@ -86,7 +87,7 @@ namespace TestApp
             dlg.Multiselect = false;
             if (dlg.ShowDialog() == true)
             {
-                test = new Test(dlg.FileName); // "D:\\xml.xml"
+                test = new Test(dlg.FileName);
                 current = 1;
                 this.Title = test.Name;
                 timeLeft = test.Time;
@@ -108,7 +109,7 @@ namespace TestApp
 
         private void button_Click_2(object sender, RoutedEventArgs e)
         {
-            currentQuestion.answers.Add(new Answer());
+            currentQuestion.Answers.Add(new Answer());
         }
 
         private void refresh()
@@ -117,6 +118,7 @@ namespace TestApp
             prevButton.IsEnabled = (current > 1);
             nextButton.IsEnabled = (current < test.Questions.Count);
             DataContext = currentQuestion;
+            questionNum.Content = current;
         }
 
 
@@ -133,7 +135,7 @@ namespace TestApp
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (MessageBox.Show("Are you sure?)","wwdww", MessageBoxButton.YesNo)==MessageBoxResult.No)
+            if (MessageBox.Show("Вы действительно хотите прервать тестирование?","Тест", MessageBoxButton.YesNo)==MessageBoxResult.No)
             {
                 e.Cancel = true;
             }
