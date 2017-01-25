@@ -75,14 +75,20 @@ namespace TestApp
 
                 test.Questions.Add(question);
             }
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Вопросы (*.xml)|*.xml";
+            if (dlg.ShowDialog() == true)
+            {
+                test.Save(dlg.FileName);
+                test = null;
+            }
+
             
-            test.Save("D:\\xml.len");
-            test = null;
         }
         private void loadTest()
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Вопросы (*.len)|*.len";
+            dlg.Filter = "Вопросы (*.xml)|*.xml";
             dlg.CheckFileExists = true;
             dlg.Multiselect = false;
             if (dlg.ShowDialog() == true)

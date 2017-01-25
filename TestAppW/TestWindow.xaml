@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestAppW"
         mc:Ignorable="d"
-        Title="Test App" Height="417" Width="616.667" BorderThickness="0" Closing="Window_Closing" Icon="SplashScreen1.png">
+        Title="Test App" Height="432" Width="641.667" BorderThickness="0" Closing="Window_Closing" Icon="SplashScreen1.png">
     <Window.Resources>
         <DataTemplate x:Key="AnswersTemplate">
             <Border Margin="1" BorderThickness="0" BorderBrush="Black" CornerRadius="1">

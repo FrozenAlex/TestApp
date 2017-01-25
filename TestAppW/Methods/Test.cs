@@ -57,15 +57,24 @@ namespace TestApp.Methods
 
         public int LoadFromFile(string path, string password = "Ass") // 
         {
+            //string myFilePath = @"C:\MyFile.txt";
+            //string ext = Path.GetExtension(myFilePath);
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
             FileStream fs = new FileStream(path, FileMode.Open); // Создание потока файла
-            var bytes = new byte[fs.Length];  // Создание массива байтов с размером равным размеру файла
-            fs.Read(bytes, 0, (int)fs.Length); // Копирование из файла в переменную bytes
-            var decriptedBytes = Crypt.Decrypt(bytes, password); // Расшифровка байтов 
-            var memoryStream = new MemoryStream(); // Создание потока в память
-            memoryStream.Write(decriptedBytes, 0, decriptedBytes.Length); // Запись в поток расшифрованных байтов
-            memoryStream.Seek(0, SeekOrigin.Begin); // перевод указателя на первый байт в потоке
-            Test test = (Test)serializer.Deserialize(memoryStream); // Десериализация расшифрованного теста из потока и импорт переменных
+            Test test;
+            if (this.Encrypted == true) { // Если файл зашифрован
+                var bytes = new byte[fs.Length];  // Создание массива байтов с размером равным размеру файла
+                fs.Read(bytes, 0, (int)fs.Length); // Копирование из файла в переменную bytes
+                var decriptedBytes = Crypt.Decrypt(bytes, password); // Расшифровка байтов
+                var memoryStream = new MemoryStream(); // Создание потока в память
+                memoryStream.Write(decriptedBytes, 0, decriptedBytes.Length); // Запись в поток расшифрованных байтов
+                memoryStream.Seek(0, SeekOrigin.Begin); // перевод указателя на первый байт в потоке
+                test = (Test)serializer.Deserialize(memoryStream); // Десериализация расшифрованного теста из потока и импорт переменных
+            }
+            else
+            {
+                test = (Test)serializer.Deserialize(fs);
+            }
             this.Password = password;
             this.Questions = test.Questions;
             this.Name = test.Name;
@@ -78,16 +87,23 @@ namespace TestApp.Methods
         }
         public int Save(string path)
         {
+           
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
             FileStream fs = new FileStream(path, FileMode.Create); // Открытие потока на создание файла
-            var memoryStream = new MemoryStream(); // Создание потока памяти
-            serializer.Serialize(memoryStream, this); // Сериализация в поток 
-            memoryStream.Seek(0, SeekOrigin.Begin); // Переход на первый байт в потоке
-            var bytes = new byte[memoryStream.Length]; 
-            memoryStream.Read(bytes, 0, (int)memoryStream.Length); // Чтение байтов из потока
-            if (this.Password == null) this.Password = defaultPassword;
-            var encryptedBytes = Crypt.Encrypt(bytes, this.Password); // Шифрование байтов
-            fs.Write(encryptedBytes, 0, encryptedBytes.Length); // Запись в файл)
+            if (this.Encrypted == true)
+            {
+                var memoryStream = new MemoryStream(); // Создание потока памяти
+                serializer.Serialize(memoryStream, this); // Сериализация в поток 
+                memoryStream.Seek(0, SeekOrigin.Begin); // Переход на первый байт в потоке
+                var bytes = new byte[memoryStream.Length];
+                memoryStream.Read(bytes, 0, (int)memoryStream.Length); // Чтение байтов из потока
+                var encryptedBytes = Crypt.Encrypt(bytes, this.Password); // Шифрование байтов
+                fs.Write(encryptedBytes, 0, encryptedBytes.Length); // Запись в файл)
+            }
+            else
+            {
+                serializer.Serialize(fs, this); // Сериализация в поток файла fs.Write(encryptedBytes, 0, encryptedBytes.Length); // Запись в файл)
+            }
             fs.Close(); // Закрытие файла
             return 0;
         }
@@ -129,9 +145,7 @@ namespace TestApp.Methods
         } 
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     [XmlInclude(typeof(ImageQuestion))]
     [XmlInclude(typeof(TextQuestion))]
     public class Question
