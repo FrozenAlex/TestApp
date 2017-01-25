@@ -37,7 +37,6 @@ namespace TestMaker
         public MainWindow()
         {
             InitializeComponent();
-            current = 1;
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -73,24 +72,29 @@ namespace TestMaker
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var q = new Question();
+            // TODO: заставить работать добавление вопроса и ответа + удаление
+            var q = new TextQuestion();
             q.Text = "Text";
             q.Cost = 1;
             var a = new Answer();
             a.Text = "aaaa";
             a.Right = false;
-            test.Questions.Add(q);
-            refresh();
-            listBox.SelectedIndex = test.Questions.Count - 1;
+            listBox.DataContext = null;
+            test.Questions.Add(q); //ItemsControl.ItemsSource.
 
+            refresh();
         }
 
         private void QuestionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             current = ((ListBox)sender).SelectedIndex;
-            CurrentQuestion.Content = current;
-            TextQuestion.DataContext = currentQuestion;
-            AnswerList.DataContext = currentQuestion;
+            if (current != -1)
+            {
+                CurrentQuestion.Content = current;
+                TextQuestion.DataContext = currentQuestion;
+                AnswerList.DataContext = currentQuestion;
+            }
+            
         }
     }
 }
