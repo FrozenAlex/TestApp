@@ -59,7 +59,7 @@ namespace TestApp
             test.Author = "Alex Brown";
             test.Encrypted = false;
             test.Name = "Demo Quiz";
-            for (int i = 0; i < 4; i++) { 
+            for (int i = 0; i < 100; i++) { 
                 TextQuestion question = new TextQuestion();
                 question.Answers = new List<Answer>();
                 question.Cost = i+1;

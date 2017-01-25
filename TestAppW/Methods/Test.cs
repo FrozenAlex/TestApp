@@ -37,7 +37,7 @@ namespace TestApp.Methods
 
         [XmlArray("questions")] // Установка имени массива в XML 
         [XmlArrayItem("question")] // Установка названия элемента массива в XML
-        public List<Question> Questions; // Список вопросов
+        public List<Question> Questions { get; set; } // Список вопросов
 
 
         public Test()
@@ -57,8 +57,6 @@ namespace TestApp.Methods
 
         public int LoadFromFile(string path, string password = "Ass") // 
         {
-            //string myFilePath = @"C:\MyFile.txt";
-            //string ext = Path.GetExtension(myFilePath);
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
             FileStream fs = new FileStream(path, FileMode.Open); // Создание потока файла
             Test test;
@@ -87,9 +85,15 @@ namespace TestApp.Methods
         }
         public int Save(string path)
         {
-           
+            this.Path = path;
+            Save();
+            return 0;
+            
+        }
+        public int Save()
+        {
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
-            FileStream fs = new FileStream(path, FileMode.Create); // Открытие потока на создание файла
+            FileStream fs = new FileStream(this.Path, FileMode.Create); // Открытие потока на создание файла
             if (this.Encrypted == true)
             {
                 var memoryStream = new MemoryStream(); // Создание потока памяти
@@ -105,22 +109,6 @@ namespace TestApp.Methods
                 serializer.Serialize(fs, this); // Сериализация в поток файла fs.Write(encryptedBytes, 0, encryptedBytes.Length); // Запись в файл)
             }
             fs.Close(); // Закрытие файла
-            return 0;
-        }
-        public int Save()
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(Test));
-            FileStream fs = new FileStream(this.Path, FileMode.Create);
-            var memoryStream = new MemoryStream();
-            serializer.Serialize(memoryStream, this);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            var bytes = new byte[memoryStream.Length];
-            memoryStream.Read(bytes, 0, (int)memoryStream.Length);
-
-            var encryptedBytes = Crypt.Encrypt(bytes, this.Password);
-            fs.Write(encryptedBytes, 0, encryptedBytes.Length);
-            fs.Close();
             return 0;
         }
         public float Grade()
@@ -150,7 +138,10 @@ namespace TestApp.Methods
     [XmlInclude(typeof(TextQuestion))]
     public class Question
     {
-        public Question() { }
+        public Question()
+        {
+            Answers = new List<Answer>();
+        }
         [XmlArray]
         public List<Answer> Answers { get; set; } // Список ответов
         [XmlAttribute]

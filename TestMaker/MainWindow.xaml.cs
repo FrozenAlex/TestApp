@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using TestApp.Methods;
 
 namespace TestMaker
 {
@@ -19,9 +21,76 @@ namespace TestMaker
     /// </summary>
     public partial class MainWindow : Window
     {
+        public int current;
+        private Test test;
+        private Question currentQuestion
+        {
+            get
+            {
+                return test.Questions[current];
+            }
+            set
+            {
+                test.Questions[current] = value;
+            }
+        }
         public MainWindow()
         {
             InitializeComponent();
+            current = 1;
+        }
+
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "Вопросы (*.xml)|*.xml";
+            dlg.CheckFileExists = true;
+            dlg.Multiselect = false;
+            if (dlg.ShowDialog() == true)
+            {
+                listBox.DataContext = null;
+                CurrentQuestion.DataContext = null;
+                test = new Test(dlg.FileName);
+                current = 1;
+                refresh();
+            }
+        }
+        private void refresh()
+        {
+            listBox.DataContext = test;
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Вопросы (*.xml)|*.xml";
+            if (dlg.ShowDialog() == true)
+            {
+                test.Save(dlg.FileName);
+                test = null;
+            }
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            var q = new Question();
+            q.Text = "Text";
+            q.Cost = 1;
+            var a = new Answer();
+            a.Text = "aaaa";
+            a.Right = false;
+            test.Questions.Add(q);
+            refresh();
+            listBox.SelectedIndex = test.Questions.Count - 1;
+
+        }
+
+        private void QuestionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            current = ((ListBox)sender).SelectedIndex;
+            CurrentQuestion.Content = current;
+            TextQuestion.DataContext = currentQuestion;
+            AnswerList.DataContext = currentQuestion;
         }
     }
 }
