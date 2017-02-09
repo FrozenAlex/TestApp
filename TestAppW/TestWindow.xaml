@@ -1,48 +1,152 @@
-﻿<Window x:Class="TestApp.MainWindow"
+﻿<Window x:Class="TestApp.TestWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TestAppW"
+        xmlns:local="clr-namespace:TestApp"
         mc:Ignorable="d"
-        Title="Test App" Height="432" Width="641.667" BorderThickness="0" Closing="Window_Closing" Icon="SplashScreen1.png">
+        Title="Test App" Height="516" Width="718" BorderThickness="0" Closing="Window_Closing" Background="#FFB4B4B4" WindowStartupLocation="CenterScreen" Visibility="Visible" Opacity="0.94" AllowsTransparency="True" WindowStyle="None">
     <Window.Resources>
-        <DataTemplate x:Key="AnswersTemplate">
-            <Border Margin="1" BorderThickness="0" BorderBrush="Black" CornerRadius="1">
-                <Grid Margin="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <CheckBox Content="{Binding Path=Text}" IsChecked="{Binding Path=Selected}"/>
-                </Grid>
-            </Border>
-        </DataTemplate>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="#FFFFF9F9"/>
+            <Setter Property="Padding" Value="4px"/>
+            <Setter Property="Border.CornerRadius" Value="3,3,3,3" />
+        </Style>
     </Window.Resources>
+    <Window.Effect>
+        <DropShadowEffect BlurRadius="74" Direction="228" ShadowDepth="14"/>
+    </Window.Effect>
+    <Grid>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
+        <Grid Background="#FFF1F1F1" Height="21" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-    <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="38*"/>
-            <RowDefinition Height="165*"/>
-            <RowDefinition Height="183*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition MaxWidth="200" Width="53*"/>
-            <ColumnDefinition MinWidth="200" Width="538*"/>
-        </Grid.ColumnDefinitions>
-        <TextBox  x:Name="QuestionText" Grid.Column="2" Text="{Binding Path=.Text}" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" VerticalContentAlignment="Center" Grid.Row="1"/>
-        <Button x:Name="SaveButton" Grid.Column="2" Content="Save" HorizontalAlignment="Left" Width="61" Click="button_Click"/>
-        <Button x:Name="LoadButton" Grid.Column="1" Content="Load"  HorizontalAlignment="Left" Width="53" Click="button1_Click"/>
+            <!-- Replaced as Window Icon -->
 
-        <ListBox ItemTemplate="{StaticResource AnswersTemplate}" x:Name="listBox" ItemsSource="{Binding Answers, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Grid.Row="2"  Margin="4,33,0,0">
-        </ListBox>
-        <Canvas Margin="235,6,234,150" Grid.Row="2" Grid.Column="2">
-            <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="19" Click="button_Navigation" Height="20" Canvas.Left="47" Canvas.Top="4" IsEnabled="False"/>
-            <Button x:Name="prevButton" Content="&lt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="19" Click="button_Navigation" Height="20" Canvas.Top="4" IsEnabled="False"/>
-            <Label x:Name="questionNum" Content="1" HorizontalContentAlignment="Center" Height="26" Width="28" Canvas.Left="19"/>
-        </Canvas>
-        <Label x:Name="timeLabel" Content="Time: 22:20" Grid.Column="2" Margin="0,2,10,0" Grid.Row="2" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="70"/>
-        <Button x:Name="button1" Content="Begin Test" HorizontalAlignment="Left" Margin="61,0,0,0" Width="67" Click="button1_Click_1" Grid.Column="2"/>
-        <Button x:Name="GradeButton" Content="Grade" HorizontalAlignment="Left" Margin="128,0,0,0" Width="48" Click="GradeButton_Click" Grid.Column="2"/>
+            <!-- Title Text -->
+            <TextBlock MouseLeftButtonDown="OnDragMoveWindow" Grid.Column="1" VerticalAlignment="Center" Margin="2 2 2 2">Тест</TextBlock>
+
+            <!-- Minimize Button -->
+            <Rectangle Fill="#FFF1F1F1" Width="24" Margin="0,0,0,0" HorizontalAlignment="Right"
+                       MouseLeftButtonUp="OnMinimizeWindow"
+                       Grid.Column="2"/>
+
+            <!-- Maximize Button -->
+            <Rectangle Fill="#FFF1F1F1" Width="24" HorizontalAlignment="Right"
+                       MouseLeftButtonUp="OnMaximizeWindow"
+                       Grid.Column="3"/>
+
+            <!-- Close Button -->
+            <Rectangle Fill="#FFF1F1F1" Width="24" HorizontalAlignment="Right"
+                       MouseLeftButtonUp="OnCloseWindow"
+                       Grid.Column="4"></Rectangle>
+            <Rectangle Grid.Column="3"  Margin="7,6,7,6" Stroke="#FF9A9A9A" StrokeThickness="2"/>
+            <Rectangle Grid.Column="2"  Margin="7,0,7,6" Stroke="#FF9A9A9A" StrokeThickness="2" Height="2" VerticalAlignment="Bottom"/>
+            <Rectangle Grid.Column="4"  Margin="7.25,10,6.75,9" Stroke="#FF9A9A9A" StrokeThickness="2" RenderTransformOrigin="0.5,0.5">
+                <Rectangle.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-45"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Grid.Column="4"  Margin="7.25,10,6.75,9" Stroke="#FF9A9A9A" StrokeThickness="2" RenderTransformOrigin="0.5,0.5">
+                <Rectangle.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="45"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Rectangle.RenderTransform>
+            </Rectangle>
+        </Grid>
+
+        <Grid Margin="0,21,0,0" >
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.982,-0.014" StartPoint="0,1.007">
+                    <GradientStop Color="#FF0077BD" Offset="0.004"/>
+                    <GradientStop Color="#FF00263C" Offset="0.726"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <Button x:Name="BeginButton" Content="Начать тест" Margin="10,10,0,0" HorizontalAlignment="Left" Width="97.5" Height="48" VerticalAlignment="Top">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFE6D5D5" Offset="0"/>
+                        <GradientStop Color="#FFD4D4D4" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button x:Name="LoadButton" Content="Load" Click="button1_Click" HorizontalAlignment="Left" Width="101.5" Height="48" VerticalAlignment="Top" Margin="6,76,0,0">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFA86E6E" Offset="0"/>
+                        <GradientStop Color="#FFA211CD" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Grid x:Name="TestContainer" Margin="115.5,10,10,0">
+                <Grid Margin="0,0,0,184.181" Background="#FFF3ECF5">
+                    <TextBlock x:Name="QuestionNumber" DockPanel.Dock="Top" Text="Вопрос 2 из 10" TextAlignment="Center"  TextWrapping="Wrap" Margin="0,7.5,0,0" Height="16" VerticalAlignment="Top" d:LayoutOverrides="Height" />
+                    <DockPanel LastChildFill="True" Background="White" Height="270.819" VerticalAlignment="Top" Margin="0,30,0,0" >
+
+                        <Image x:Name="QuestionImage"  Height="150" DockPanel.Dock="Top" Visibility="Collapsed" />
+                        <TextBlock x:Name="QuestionText"  VerticalAlignment="Center" TextAlignment="Center" MinHeight="30" TextWrapping="Wrap" Text="Текст вопроса" FontSize="22" Padding="7,0" />
+                    </DockPanel>
+                </Grid>
+
+                <Grid x:Name = "AnswerContainer" Margin="0,0,0,10" Height="169.181" VerticalAlignment="Bottom">
+                    <Grid x:Name="TextContainer" Background="#FFE0E0E0"  Visibility="Collapsed">
+                        <Label Content="Введите ответ на вопрос:"></Label>
+                        <TextBox x:Name="TextAnswer" Margin="0,26.5,0,0"/>
+                    </Grid>
+                    <Grid x:Name="RadioContainer" Background="#FFE0E0E0" Visibility="Collapsed">
+                        <Label Content="Выберите правильный ответ:"></Label>
+                        <ListBox x:Name="RadioAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="0,26.5,0,0">
+                            <RadioButton Content="Вариант 1"/>
+                            <RadioButton Content="Вариант 2"/>
+                            <RadioButton Content="Вариант 3"/>
+                            <ListBox.ItemContainerStyle>
+                                <Style>
+                                    <Setter Property="ListBoxItem.Padding" Value="7"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Grid>
+                    <Grid x:Name="SelectContainer" Background="#FFE0E0E0">
+                        <Label Content="Выберите правильные ответы:"></Label>
+                        <ListBox x:Name="SelectAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="0,26.5,0,0">
+                            <CheckBox Content="Вариант 1"/>
+                            <CheckBox Content="Вариант 2"/>
+                            <CheckBox Content="Вариант 3"/>
+                            <ListBox.ItemContainerStyle>
+                                <Style>
+                                    <Setter Property="ListBoxItem.Padding" Value="7"/>
+                                </Style>
+
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+            <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="25" Height="25" IsEnabled="True" Margin="73.5,0,0,9.746" Click="Nav_Click" d:LayoutOverrides="HorizontalAlignment, VerticalAlignment"/>
+            <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="10,0,0,10" Click="Nav_Click" HorizontalAlignment="Left" Width="27" Height="24.746" VerticalAlignment="Bottom"/>
+            <Button x:Name="button" Content="Test" HorizontalAlignment="Left" Height="31.5" Margin="10,0,0,57.746" VerticalAlignment="Bottom" Width="88.5" Click="button_Click"/>
+        </Grid>
     </Grid>
+
 </Window>

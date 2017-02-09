@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using TestApp.Methods;
+using System.ComponentModel;
 
 namespace TestMaker
 {
@@ -21,6 +22,12 @@ namespace TestMaker
     /// </summary>
     public partial class MainWindow : Window
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void Notify(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
         public int current;
         private Test test;
         private Question currentQuestion
@@ -32,6 +39,7 @@ namespace TestMaker
             set
             {
                 test.Questions[current] = value;
+                Notify("SelectedIndex");
             }
         }
         public MainWindow()
@@ -95,6 +103,13 @@ namespace TestMaker
                 AnswerList.DataContext = currentQuestion;
             }
             
+        }
+
+        private void image_Drop(object sender, DragEventArgs e)
+        {
+            string[] FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            
+            ((Image) sender).Source = Jp;
         }
     }
 }

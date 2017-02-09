@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TestMaker"
         xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="TestMaker.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="474" Width="794">
+        Title="MainWindow" Height="474" Width="835">
     <Window.Resources>
         <DataTemplate x:Key="QuestionsTemplate">
             <Border Margin="1" BorderThickness="0" BorderBrush="Black" CornerRadius="1">
@@ -49,5 +49,6 @@
         <ComboBox x:Name="QuestionType" Margin="656,5,10,0" VerticalAlignment="Top"/>
         <Label x:Name="CurrentQuestion" Content="Label" HorizontalAlignment="Left" Margin="208,1,0,0" VerticalAlignment="Top"/>
         <ListBox ItemTemplate="{StaticResource AnswersTemplate}" ItemsSource="{Binding Answers, UpdateSourceTrigger=PropertyChanged}" x:Name="AnswerList" Margin="208,217,10,10"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Height="174" Margin="208,28,0,0" VerticalAlignment="Top" Width="169" AllowDrop="True" Drop="image_Drop"/>
     </Grid>
 </Window>
