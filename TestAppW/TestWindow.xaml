@@ -143,7 +143,7 @@
             </Grid>
             <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="25" Height="25" IsEnabled="True" Margin="73.5,0,0,9.746" Click="Nav_Click" d:LayoutOverrides="HorizontalAlignment, VerticalAlignment"/>
             <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="10,0,0,10" Click="Nav_Click" HorizontalAlignment="Left" Width="27" Height="24.746" VerticalAlignment="Bottom"/>
-            <Button x:Name="LoadButton_Copy" Content="Закончить тест" Click="button1_Click" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Margin="6,63,0,0">
+            <Button x:Name="EndButton" Content="Закончить тест" Click="button1_Click" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Margin="6,63,0,0" IsEnabled="False">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFA86E6E" Offset="0"/>

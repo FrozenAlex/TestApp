@@ -66,6 +66,7 @@ namespace TestApp
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
+            if (TestList.SelectedIndex == -1) return;
             string  testName = ((TextBlock)TestList.Items[TestList.SelectedIndex]).Text;
             string path = System.IO.Path.Combine(AppData, "pack", testName + ".zip");
             Unpack(path);
@@ -76,6 +77,7 @@ namespace TestApp
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
+            if (TestList.SelectedIndex == -1) return;
             string testName = ((TextBlock)TestList.Items[TestList.SelectedIndex]).Text;
             string path = System.IO.Path.Combine(AppData, "pack", testName + ".zip");
             Unpack(path);

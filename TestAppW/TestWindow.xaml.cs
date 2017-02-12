@@ -105,6 +105,8 @@ namespace TestApp
         {
             TestContainer.Visibility = Visibility.Collapsed;
             ResultContainer.Visibility = Visibility.Visible;
+            BeginButton.IsEnabled = true;
+            EndButton.IsEnabled = false;
             float result = test.Grade();
             if (result < 0.20)
             {
@@ -144,10 +146,10 @@ namespace TestApp
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //if (MessageBox.Show("Вы действительно хотите прервать тестирование?","Тест", MessageBoxButton.YesNo)==MessageBoxResult.No)
-            //{
-            //    e.Cancel = true;
-           // }
+           if (MessageBox.Show("Вы действительно хотите прервать тестирование?","Тест", MessageBoxButton.YesNo)==MessageBoxResult.No)
+            {
+             e.Cancel = true;
+           }
         }
 
         private void GetData()
@@ -259,7 +261,10 @@ namespace TestApp
 
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
+            ResultContainer.Visibility = Visibility.Collapsed;
             TestContainer.Visibility = Visibility.Visible;
+            BeginButton.IsEnabled = false;
+            EndButton.IsEnabled = true;
             UpdateView();
         }
     }
