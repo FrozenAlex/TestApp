@@ -32,6 +32,7 @@ namespace TestApp.Models
         public List<Question> Questions { get; set; } // Список вопросов
         public Test() { }
 
+        
         public int Load(string path) // 
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора

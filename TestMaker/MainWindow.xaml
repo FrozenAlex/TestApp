@@ -8,47 +8,36 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="474" Width="835">
     <Window.Resources>
-        <DataTemplate x:Key="QuestionsTemplate">
-            <Border Margin="1" BorderThickness="0" BorderBrush="Black" CornerRadius="1">
-                <Grid Margin="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <ListBoxItem Content="{Binding Path=Text}"/>
-                </Grid>
-            </Border>
-        </DataTemplate>
-        <DataTemplate x:Key="AnswersTemplate">
-            <Border Margin="1" BorderThickness="0" BorderBrush="Black" CornerRadius="1">
-                <Grid Margin="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Margin="1,1" Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding Path=Right}"/>
-                        <TextBox Text="{Binding Path=Text}"/>
-                    </StackPanel>
-
-                </Grid>
-            </Border>
-        </DataTemplate>
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <ListBox ItemTemplate="{StaticResource QuestionsTemplate}" x:Name="listBox" ItemsSource="{Binding Questions, UpdateSourceTrigger=PropertyChanged}" Margin="10,23,0,37" SelectionChanged="QuestionBox_SelectionChanged" HorizontalAlignment="Left" Width="184"/>
-        <Button x:Name="AddButton" Content="+" HorizontalAlignment="Left" Margin="10,0,0,10" Width="184" Click="AddButton_Click" Height="22" VerticalAlignment="Bottom"/>
-        <TextBox x:Name="TextQuestion" Text="{Binding Path=.Text}" Height="174" Margin="208,28,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Width="61" Click="Save_Click" Margin="133,-1,0,0" Height="19" VerticalAlignment="Top"/>
-        <Button x:Name="LoadButton" Content="Load"  HorizontalAlignment="Left" Width="62" Click="LoadButton_Click" Margin="71,-1,0,0" Height="19" VerticalAlignment="Top"/>
-        <ComboBox x:Name="QuestionType" Margin="656,5,10,0" VerticalAlignment="Top"/>
-        <Label x:Name="CurrentQuestion" Content="Label" HorizontalAlignment="Left" Margin="208,1,0,0" VerticalAlignment="Top"/>
-        <ListBox ItemTemplate="{StaticResource AnswersTemplate}" ItemsSource="{Binding Answers, UpdateSourceTrigger=PropertyChanged}" x:Name="AnswerList" Margin="208,217,10,10"/>
-        <Image x:Name="image" HorizontalAlignment="Left" Height="174" Margin="208,28,0,0" VerticalAlignment="Top" Width="169" AllowDrop="True" Drop="image_Drop"/>
-    </Grid>
+    <DockPanel>
+        <Menu x:Name="menu"  DockPanel.Dock="Top" FontFamily="Lucida Calligraphy">
+            <MenuItem Header="Файл" >
+                <MenuItem Header="Открыть" />
+                <MenuItem Header="Открыть папку" />
+                <MenuItem Header="Открыть архив" />
+                <MenuItem Header="Экспорт в архив" />
+            </MenuItem>
+            <MenuItem Header="Инструменты">
+                <MenuItem Header="Упаковать директорию с тестом" Click="MenuItem_Click" />
+            </MenuItem>
+            <MenuItem Header="Справка" />
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ListBox x:Name="listBox"  Margin="10,23,0,37" SelectionChanged="QuestionBox_SelectionChanged" HorizontalAlignment="Left" Width="184"/>
+            <Button x:Name="AddButton" Content="+" HorizontalAlignment="Left" Margin="10,0,0,10" Width="184" Click="AddButton_Click" Height="22" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="TextQuestion" Height="174" Margin="208,28,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Width="61" Click="Save_Click" Margin="398,202,0,0" Height="19" VerticalAlignment="Top"/>
+            <Button x:Name="LoadButton" Content="Load"  HorizontalAlignment="Left" Width="62" Click="LoadButton_Click" Margin="336,202,0,0" Height="19" VerticalAlignment="Top"/>
+            <Label x:Name="CurrentQuestion" Content="Label" HorizontalAlignment="Left" Margin="208,1,0,0" VerticalAlignment="Top"/>
+            <ListBox x:Name="AnswerList" Margin="208,217,10,10"/>
+            <Image x:Name="image" HorizontalAlignment="Left" Height="174" Margin="208,28,0,0" VerticalAlignment="Top" Width="169" AllowDrop="True" Drop="image_Drop"/>
+        </Grid>
+    </DockPanel>
 </Window>

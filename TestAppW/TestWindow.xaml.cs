@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,12 +16,20 @@ namespace TestApp
     /// </summary>
     public partial class TestWindow : Window
     {
+        string currentDir;
         public Test test = new Test();
         private DispatcherTimer timer = null;
         private ulong timeLeft;
 
         public TestWindow()
         {
+            InitializeComponent();
+        }
+
+        public TestWindow(string folderPath)
+        {
+            currentDir = folderPath;
+            test.Load(Path.Combine(folderPath,"test.xml"));
             InitializeComponent();
         }
 
@@ -80,7 +89,7 @@ namespace TestApp
                 }
                 else
                 {
-                    var uri = new Uri(System.AppDomain.CurrentDomain.BaseDirectory + "test\\image\\" + test.Questions[Current].Image);
+                    var uri = new Uri(Path.Combine(currentDir, "image",test.Questions[Current].Image));
                     BitmapImage image = new BitmapImage();
                     image.BeginInit();
                     image.CacheOption = BitmapCacheOption.OnLoad;
@@ -89,14 +98,39 @@ namespace TestApp
                     var bit = image;
                     return bit;
                 }
-
             }
-
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            loadTest();
+            TestContainer.Visibility = Visibility.Collapsed;
+            ResultContainer.Visibility = Visibility.Visible;
+            float result = test.Grade();
+            if (result < 0.20)
+            {
+                ResultText.Text = "Ужасно";   
+            }
+            else if (result < 0.40)
+            {
+                ResultText.Text = "Плохо";
+            }
+            else if (result < 0.55)
+            {
+                ResultText.Text = "Так себе...";
+            }
+            else if (result < 0.79)
+            {
+                ResultText.Text = "Хорошо";
+            }
+            else if (result < 1)
+            {
+                ResultText.Text = "Почти отлично";
+            }
+            else if (result == 1)
+            {
+                ResultText.Text = "Отлично";
+            }
+            ResultWrongNum.Text = "Правильных ответов: " + (result * 100).ToString() + "%";
         }
 
         private void button_Click_2(object sender, RoutedEventArgs e)
@@ -142,17 +176,17 @@ namespace TestApp
 
         private void Nav_Click(object sender, RoutedEventArgs e)
         {
+            GetData(); // Get user input
             Button button = sender as Button;
-            GetData();
             if (button.Name == "nextButton") Current++;
             if (button.Name == "prevButton") Current--;
-            UpdateView();
+            UpdateView(); 
         }
         private void UpdateView()
         {
-            //QImage.Source = cImage;
-            //if (cImage != null) QImage.Visibility = Visibility.Visible;
-            //else QImage.Visibility = Visibility.Collapsed;
+            QuestionImage.Source = cImage;
+            if (cImage != null) QuestionImage.Visibility = Visibility.Visible;
+            else QuestionImage.Visibility = Visibility.Collapsed;
 
             QuestionText.Text = cQuestion.Text; // Текст вопроса
             QuestionNumber.Text = "Вопрос " + (Current+1) + " из " + test.Questions.Count;
@@ -221,6 +255,12 @@ namespace TestApp
         private void OnCloseWindow(object sender, MouseButtonEventArgs e)
         {
             this.Close();
+        }
+
+        private void BeginButton_Click(object sender, RoutedEventArgs e)
+        {
+            TestContainer.Visibility = Visibility.Visible;
+            UpdateView();
         }
     }
 }
