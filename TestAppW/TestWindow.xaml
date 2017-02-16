@@ -136,14 +136,14 @@
                 </Grid>
             </Grid>
             <!--Visibility="Collapsed"-->
-            <Grid x:Name="ResultContainer" Margin="116,10,10,10" Background="White" Visibility="Collapsed">
+            <Grid x:Name="ResultContainer" Margin="116,10,10,10" Background="White">
                 <TextBlock x:Name="ResultText" HorizontalAlignment="Left" Height="38" Margin="10,10,0,0" TextWrapping="Wrap" Text="Результат: " VerticalAlignment="Top" Width="572" TextAlignment="Center" FontSize="22"/>
                 <TextBlock x:Name="ResultWrongQuestions" HorizontalAlignment="Left" Margin="10,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="384" Width="572"/>
                 <TextBlock x:Name="ResultWrongNum" HorizontalAlignment="Left" Height="28" Margin="10,48,0,0" TextWrapping="Wrap" Text="Неправильных ответов:" VerticalAlignment="Top" Width="572" TextAlignment="Center" FontSize="18"/>
             </Grid>
             <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="25" Height="25" IsEnabled="True" Margin="73.5,0,0,9.746" Click="Nav_Click" d:LayoutOverrides="HorizontalAlignment, VerticalAlignment"/>
             <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="10,0,0,10" Click="Nav_Click" HorizontalAlignment="Left" Width="27" Height="24.746" VerticalAlignment="Bottom"/>
-            <Button x:Name="EndButton" Content="Закончить тест" Click="button1_Click" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Margin="6,63,0,0" IsEnabled="False">
+            <Button x:Name="EndButton" Content="Закончить тест" Click="EndButton_Click" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Margin="6,63,0,0" IsEnabled="False">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFA86E6E" Offset="0"/>

@@ -101,13 +101,14 @@ namespace TestApp
             }
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void EndButton_Click(object sender, RoutedEventArgs e)
         {
+            GetData(); // Получить ответ на текущий вопрос
             TestContainer.Visibility = Visibility.Collapsed;
             ResultContainer.Visibility = Visibility.Visible;
             BeginButton.IsEnabled = true;
             EndButton.IsEnabled = false;
-            float result = test.Grade();
+            float result = test.Grade(); // Получить оценку
             if (result < 0.20)
             {
                 ResultText.Text = "Ужасно";   
@@ -132,12 +133,17 @@ namespace TestApp
             {
                 ResultText.Text = "Отлично";
             }
-            ResultWrongNum.Text = "Правильных ответов: " + (result * 100).ToString() + "%";
+            ResultWrongNum.Text = String.Format("Правильных ответов:  {0:0.00}%", (result * 100));
+            List<Question> wrong = test.Wrong;
+            // Вывод неправильных ответов
+            ResultWrongQuestions.Text = "";
+            foreach (Question q in wrong)
+            {
+                ResultWrongQuestions.Text += q.Text + "\n";
+            }
         }
 
-        private void button_Click_2(object sender, RoutedEventArgs e)
-        {
-        }
+
 
         private void button1_Click_1(object sender, RoutedEventArgs e)
         {
@@ -208,29 +214,26 @@ namespace TestApp
             // Get data
             if (cQuestion is Question.Select)
             {
-                foreach (var answer in ((Question.Select)cQuestion).Answers)
+                foreach (var answer in (cQuestion as Question.Select).Answers)
                 {
-                    var checkbox = new CheckBox();
-                    checkbox.Content = answer.Text;
-                    checkbox.IsChecked = answer.Selected;
+                    var checkbox = new CheckBox() { Content = answer.Text, IsChecked = answer.Selected };
                     SelectAnswer.Items.Add(checkbox);
                 }
             }
 
             if (cQuestion is Question.Radio)
             {
-                foreach (var answer in ((Question.Radio)cQuestion).Answers)
+                foreach (var answer in (cQuestion as Question.Radio).Answers)
                 {
-                    var TextBlock = new TextBlock();
-                    TextBlock.Text = answer.Text;
+                    var TextBlock = new TextBlock() { Text = answer.Text };
                     RadioAnswer.Items.Add(TextBlock);
                 }
-                RadioAnswer.SelectedIndex = ((Question.Radio)cQuestion).Selected;
+                RadioAnswer.SelectedIndex = (cQuestion as Question.Radio).Selected;
             }
 
             if (cQuestion is Question.Edit)
             {
-                TextAnswer.Text = ((Question.Edit)cQuestion).wrote;
+                TextAnswer.Text = (cQuestion as Question.Edit).wrote;
             }
         }
 

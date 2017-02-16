@@ -26,6 +26,20 @@ namespace TestApp.Models
         public string Author { get; set; }
         [XmlAttribute]
         public bool Encrypted { get; set; }
+        [XmlIgnore]
+        public List<Question> Wrong // Список неверных вопросов
+        {
+            get
+            {
+                List<Question> wrong = new List<Question>();
+                foreach (Question q in Questions) // Пробираю через все вопросы
+                    if (q.Grade() != 1) wrong.Add(q);
+                return wrong;
+            }
+        }
+
+
+
 
         [XmlArray("questions")] // Установка имени массива в XML 
         [XmlArrayItem("question")] // Установка названия элемента массива в XML
@@ -65,124 +79,84 @@ namespace TestApp.Models
             int max = Questions.Count; // Все вопросы по одному очку
             float score = 0; // Кол-во очков
             foreach (Question q in Questions) // Пробираю через все вопросы
-            {
-                var result = q.Grade();
-                if (result == 1) score++;
-            }
+                if (q.Grade() == 1) score++;      
             if (score == 0) return 0;
-            return ((max / 100) * score);
+            return score / max;
         }
+        
     }
 
 
     [XmlInclude(typeof(Question.Edit))]
     [XmlInclude(typeof(Question.Radio))]
     [XmlInclude(typeof(Question.Select))]
-    public class Question
+    public abstract class Question
     {
-        public Question() { }
-        /// <summary>
-        /// Каждый вопрос оценивает себя сам и возвращает баллы
-        /// </summary>
-        /// <returns>Возвращает -1 - если не отвечен, 0 - если отвечен и 1 - если верен</returns>
-        public virtual sbyte Grade() // каждый вопрос может себя оценить)
-        {
-            return 0;
-        }
+        // Свойства
         public string Text { get; set; } // Текст вопроса
         public string Image { get; set; } // Путь к изображению
-        
+        // Методы
+        public abstract sbyte Grade(); // каждый вопрос может себя оценить)
+
+        // Вопрос с текстовым ответом
         public class Edit : Question
         {
-
-            public Edit() { }
-            public override sbyte Grade()
-            {
-                if (wrote == null || wrote == "")
-                {
-                    return -1;
-                }
-                else if (wrote.ToUpper() == answer.ToUpper()) // Игнорируем заглавные/строчные буквы
-                {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            // Свойства
             public string answer { get; set; }
             [XmlIgnore]
             public string wrote { get; set; }
-        }
 
-        public class Radio : Question
-        {
-
-            public Radio() { Selected = -1; }
+            // Методы
             public override sbyte Grade()
             {
-                if (Selected == -1)
-                {
-                    return -1;
-                }
-                else if (Answers[Selected].Right == true)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
+                if (String.IsNullOrEmpty(wrote)) return -1; // Если строка пустая то -1 (не отвечен)   
+                if (String.Equals(wrote, answer, StringComparison.CurrentCultureIgnoreCase)) return 1; // Сравниваем обе строки без учета регистра
+                return 0; // Если не нашлось совпадений то не верно
             }
-            [XmlIgnore]
-            private int selected;
-
-            public int Selected
-            {
-                get { return selected; }
-                set
-                {
-                    selected = value;
-                }
-            }
-            public List<Answer> Answers { get; set; } // Список ответов
+           
         }
 
+        // Вопрос с выбором одного правильного ответа
+        public class Radio : Question
+        {
+            // Свойства
+            [XmlIgnore]
+            public int Selected { get; set; } = -1;
+            public List<Answer> Answers { get; set; } // Список ответов
+
+            // Методы
+            public override sbyte Grade()
+            {
+                if (Selected == -1) return -1; // Если не выбран
+                if (Answers[Selected].Right == true) return 1; // Если выбран правильный
+                return 0; // Если не правильный
+            }    
+        }
+
+        // Вопрос с галочками
         public class Select : Question // Вопрос с галочками
         {
+            // Свойства
+            public List<Answer> Answers { get; set; } // Список ответов
 
-            public Select() { }
+            // Методы
             public override sbyte Grade()
             {
                 int Error = 0;
                 foreach (Answer a in Answers)
-                {
                     if (a.Right != a.Selected) Error++;
-                }
-                if (Error == 0)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
+                if (Error == 0) return 1;
+                return 0;
             }
-            public List<Answer> Answers { get; set; } // Список ответов
+   
         }
         public class Answer
         {
-            public Answer() { }
-            public Answer(string text, bool right = false)
-            {
-                Text = text;
-                Right = right;
-            }
+            // Свойства
             [XmlIgnore]
-            public bool Selected { get; set; } // Лень думать
-            public string Text { get; set; }
-            public bool Right { get; set; }
+            public bool Selected { get; set; } // Выбран ли ответ
+            public string Text { get; set; } // Текст варианта ответа
+            public bool Right { get; set; } // Правильность ответа
         }
 
     }
