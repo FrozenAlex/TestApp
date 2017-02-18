@@ -19,34 +19,10 @@ namespace TestApp
         string currentDir;
         public Test test = new Test();
         private DispatcherTimer timer = null;
-        private ulong timeLeft;
-
-        public TestWindow()
-        {
-            InitializeComponent();
-        }
-
-        public TestWindow(string folderPath)
-        {
-            currentDir = folderPath;
-            test.Load(Path.Combine(folderPath,"test.xml"));
-            InitializeComponent();
-        }
-
-        private void timerStart()
-        {
-            timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(timerTick);
-            timer.Interval = new TimeSpan(0, 0, 0, 1);
-            timer.Start();
-        }
-
-        private void timerTick(object sender, EventArgs e)
-        {
-            timeLeft--;
-        }
-
+        private ulong TimeLeft;
+        private bool isTesting = false;
         public int Current;
+
         public Question cQuestion
         {
             get
@@ -61,23 +37,6 @@ namespace TestApp
             }
         }
 
-        private void startTest()
-        {
-            timerStart();
-        }
-        private void loadTest()
-        {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Вопросы (*.xml)|*.xml";
-            dlg.CheckFileExists = true;
-            dlg.Multiselect = false;
-            if (dlg.ShowDialog() == true)
-            {
-                test.Load(dlg.FileName);
-                UpdateView();
-            }
-        }
-        
         public BitmapImage cImage
         {
             get
@@ -101,9 +60,83 @@ namespace TestApp
             }
         }
 
-        private void EndButton_Click(object sender, RoutedEventArgs e)
+        public TestWindow()
+        {
+            InitializeComponent();
+        }
+
+        public TestWindow(string folderPath)
+        {
+            currentDir = folderPath;
+            test.Load(Path.Combine(folderPath,"test.xml"));
+            InitializeComponent();
+
+            Title = test.Name; // Установить заголовок окна на название теста
+
+            if (test.Time > 1)
+            {
+                TimeContainer.Visibility = Visibility.Visible;
+                TimeLeft = test.Time;
+                TimeLeftText.Text = TimeSpan.FromSeconds(TimeLeft).ToString(@"mm\:ss"); // Форматированый вывод времени
+            }
+            else TimeContainer.Visibility = Visibility.Collapsed;
+            
+        }
+        // Старт таймера
+        private void TimerStart()
+        {
+            timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(TimerTick);
+            timer.Interval = new TimeSpan(0, 0, 0, 1);
+            timer.Start();
+        }
+        // Функция, вызываемая по срабатыванию таймера
+        private void TimerTick(object sender, EventArgs e)
+        {
+            TimeLeft--;
+            TimeLeftText.Text = TimeSpan.FromSeconds(TimeLeft).ToString(@"mm\:ss");
+            if (TimeLeft <= 0)
+            {
+                (sender as DispatcherTimer).Stop();
+                EndTest();
+            }
+        }
+
+
+        
+
+        private void StartTest()
+        {
+            // Установить флаг теста
+            isTesting = true;
+
+            // Инициализация теста
+            test.Clean(); // Сброс всех ответов
+            if (test.Questions != null) Current = 0; // Сбросить текущий вопрос на 1й
+
+            // Кнопки начать тест и закончить тест
+            BeginButton.IsEnabled = false;
+            EndButton.IsEnabled = true;
+
+            // Если время больше еденицы то начинаем считать время
+            if (test.Time > 1)
+            {
+                TimeLeft = test.Time;
+                TimerStart();
+            }
+
+            UpdateView(); // Заполнить вид
+            // Видимость теста и результата
+            ResultContainer.Visibility = Visibility.Collapsed;
+            TestContainer.Visibility = Visibility.Visible;
+
+        }
+
+        
+        private void EndTest()
         {
             GetData(); // Получить ответ на текущий вопрос
+            
             TestContainer.Visibility = Visibility.Collapsed;
             ResultContainer.Visibility = Visibility.Visible;
             BeginButton.IsEnabled = true;
@@ -111,7 +144,7 @@ namespace TestApp
             float result = test.Grade(); // Получить оценку
             if (result < 0.20)
             {
-                ResultText.Text = "Ужасно";   
+                ResultText.Text = "Ужасно";
             }
             else if (result < 0.40)
             {
@@ -141,22 +174,10 @@ namespace TestApp
             {
                 ResultWrongQuestions.Text += q.Text + "\n";
             }
+            if (timer != null) timer.Stop();
+            isTesting = false;
         }
-
-
-
-        private void button1_Click_1(object sender, RoutedEventArgs e)
-        {
-            startTest();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-           if (MessageBox.Show("Вы действительно хотите прервать тестирование?","Тест", MessageBoxButton.YesNo)==MessageBoxResult.No)
-            {
-             e.Cancel = true;
-           }
-        }
+        
 
         private void GetData()
         {
@@ -182,36 +203,31 @@ namespace TestApp
             }
         }
 
-        private void Nav_Click(object sender, RoutedEventArgs e)
-        {
-            GetData(); // Get user input
-            Button button = sender as Button;
-            if (button.Name == "nextButton") Current++;
-            if (button.Name == "prevButton") Current--;
-            UpdateView(); 
-        }
+        // Функция, заполняющая вопросы и ответы, и управляющая видом окна в режиме тестирования
         private void UpdateView()
         {
+            // Изображение
             QuestionImage.Source = cImage;
-            if (cImage != null) QuestionImage.Visibility = Visibility.Visible;
-            else QuestionImage.Visibility = Visibility.Collapsed;
+            QuestionImage.Visibility = (cImage != null) ? Visibility.Visible : Visibility.Collapsed; // Видимость контейнера изображения
 
+            // Заполнение номера вопроса и текста вопроса
             QuestionText.Text = cQuestion.Text; // Текст вопроса
-            QuestionNumber.Text = "Вопрос " + (Current+1) + " из " + test.Questions.Count;
+            QuestionNumber.Text = "Вопрос " + (Current + 1) + " из " + test.Questions.Count; // Номер вопроса
 
-            // Кнопки <>
+            // Включение и отключение кнопок навигации
             prevButton.IsEnabled = (Current >= 1);
             nextButton.IsEnabled = (Current < test.Questions.Count - 1);
-            // Visibility switch
+
+            // Видимость контейнеров для различных типов вопросов
             SelectContainer.Visibility = (cQuestion is Question.Select) ? Visibility.Visible : Visibility.Collapsed;
             RadioContainer.Visibility = (cQuestion is Question.Radio) ? Visibility.Visible : Visibility.Collapsed;
             TextContainer.Visibility = (cQuestion is Question.Edit) ? Visibility.Visible : Visibility.Collapsed;
 
-            // Clean all
+            // Очистить все контейнеры
             SelectAnswer.Items.Clear();
             RadioAnswer.Items.Clear();
 
-            // Get data
+            // Заполнение различных контейнеров с ответами в зависимости от типа вопроса
             if (cQuestion is Question.Select)
             {
                 foreach (var answer in (cQuestion as Question.Select).Answers)
@@ -221,6 +237,7 @@ namespace TestApp
                 }
             }
 
+            // Если вопрос является вопросом выбора 1го правильного ответа
             if (cQuestion is Question.Radio)
             {
                 foreach (var answer in (cQuestion as Question.Radio).Answers)
@@ -230,18 +247,21 @@ namespace TestApp
                 }
                 RadioAnswer.SelectedIndex = (cQuestion as Question.Radio).Selected;
             }
-
-            if (cQuestion is Question.Edit)
-            {
-                TextAnswer.Text = (cQuestion as Question.Edit).wrote;
-            }
+            if (cQuestion is Question.Edit) TextAnswer.Text = (cQuestion as Question.Edit).wrote;
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+
+        // Обработчик кнопок навигации
+        private void Nav_Click(object sender, RoutedEventArgs e)
         {
-           
+            GetData(); // Получить ответ на текущий вопрос
+            Button button = sender as Button;
+            if (button.Name == "nextButton") Current++;
+            if (button.Name == "prevButton") Current--;
+            UpdateView(); 
         }
-
+        
+        // Функции для работы кастомного заголовка окна
         private void OnDragMoveWindow(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
@@ -262,13 +282,27 @@ namespace TestApp
             this.Close();
         }
 
+        // Обработчики нажатий некоторых кнопок (Которые вызывают функцию выше)
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
-            ResultContainer.Visibility = Visibility.Collapsed;
-            TestContainer.Visibility = Visibility.Visible;
-            BeginButton.IsEnabled = false;
-            EndButton.IsEnabled = true;
-            UpdateView();
+            StartTest();
+        }
+        private void EndButton_Click(object sender, RoutedEventArgs e)
+        {
+            EndTest();
+        }
+
+        // Обработчик закрытия окна для вывода сообщения с подтверждением
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (isTesting)
+            {
+                if (MessageBox.Show("Вы действительно хотите прервать тестирование?", "Тест", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+
         }
     }
 }

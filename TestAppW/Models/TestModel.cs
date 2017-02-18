@@ -33,11 +33,14 @@ namespace TestApp.Models
             {
                 List<Question> wrong = new List<Question>();
                 foreach (Question q in Questions) // Пробираю через все вопросы
-                    if (q.Grade() != 1) wrong.Add(q);
+                    if (q.Grade() != 1) wrong.Add(q); // Если неверен то добавляю вопрос
                 return wrong;
             }
         }
-
+        public void Clean()
+        {
+            foreach (Question q in Questions) q.Clean();
+        }
 
 
 
@@ -97,6 +100,7 @@ namespace TestApp.Models
         public string Image { get; set; } // Путь к изображению
         // Методы
         public abstract sbyte Grade(); // каждый вопрос может себя оценить)
+        public abstract void Clean(); // Метод очистки введенных данных
 
         // Вопрос с текстовым ответом
         public class Edit : Question
@@ -113,7 +117,13 @@ namespace TestApp.Models
                 if (String.Equals(wrote, answer, StringComparison.CurrentCultureIgnoreCase)) return 1; // Сравниваем обе строки без учета регистра
                 return 0; // Если не нашлось совпадений то не верно
             }
-           
+
+            public override void Clean()
+            {
+                wrote = null;
+            }
+
+
         }
 
         // Вопрос с выбором одного правильного ответа
@@ -130,7 +140,11 @@ namespace TestApp.Models
                 if (Selected == -1) return -1; // Если не выбран
                 if (Answers[Selected].Right == true) return 1; // Если выбран правильный
                 return 0; // Если не правильный
-            }    
+            }
+            public override void Clean()
+            {
+                Selected = -1;
+            }
         }
 
         // Вопрос с галочками
@@ -148,8 +162,13 @@ namespace TestApp.Models
                 if (Error == 0) return 1;
                 return 0;
             }
-   
+            public override void Clean()
+            {
+                foreach (Answer a in Answers) a.Selected = false;
+            }
+
         }
+
         public class Answer
         {
             // Свойства
