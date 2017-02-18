@@ -16,6 +16,7 @@ namespace TestApp
     /// </summary>
     public partial class TestWindow : Window
     {
+        // Переменные
         string currentDir;
         public Test test = new Test();
         private DispatcherTimer timer = null;
@@ -23,6 +24,7 @@ namespace TestApp
         private bool isTesting = false;
         public int Current;
 
+        // Свойства
         public Question cQuestion
         {
             get
@@ -36,7 +38,6 @@ namespace TestApp
                 test.Questions[Current] = value;
             }
         }
-
         public BitmapImage cImage
         {
             get
@@ -60,11 +61,11 @@ namespace TestApp
             }
         }
 
+        // Конструктор
         public TestWindow()
         {
             InitializeComponent();
         }
-
         public TestWindow(string folderPath)
         {
             currentDir = folderPath;
@@ -72,7 +73,6 @@ namespace TestApp
             InitializeComponent();
 
             Title = test.Name; // Установить заголовок окна на название теста
-
             if (test.Time > 1)
             {
                 TimeContainer.Visibility = Visibility.Visible;
@@ -82,6 +82,7 @@ namespace TestApp
             else TimeContainer.Visibility = Visibility.Collapsed;
             
         }
+
         // Старт таймера
         private void TimerStart()
         {
@@ -104,15 +105,17 @@ namespace TestApp
 
 
         
-
+        // Функция начать тест
         private void StartTest()
         {
             // Установить флаг теста
             isTesting = true;
 
             // Инициализация теста
-            test.Clean(); // Сброс всех ответов
+            test.Clean(); // Сбросить все ответы
+            test.Shuffle(); // Перемешать тест
             if (test.Questions != null) Current = 0; // Сбросить текущий вопрос на 1й
+            
 
             // Кнопки начать тест и закончить тест
             BeginButton.IsEnabled = false;
@@ -132,42 +135,29 @@ namespace TestApp
 
         }
 
-        
+        // Функция закончить тест и вывести результат
         private void EndTest()
         {
             GetData(); // Получить ответ на текущий вопрос
             
             TestContainer.Visibility = Visibility.Collapsed;
             ResultContainer.Visibility = Visibility.Visible;
+
             BeginButton.IsEnabled = true;
             EndButton.IsEnabled = false;
+            
             float result = test.Grade(); // Получить оценку
-            if (result < 0.20)
-            {
-                ResultText.Text = "Ужасно";
-            }
-            else if (result < 0.40)
-            {
-                ResultText.Text = "Плохо";
-            }
-            else if (result < 0.55)
-            {
-                ResultText.Text = "Так себе...";
-            }
-            else if (result < 0.79)
-            {
-                ResultText.Text = "Хорошо";
-            }
-            else if (result < 1)
-            {
-                ResultText.Text = "Почти отлично";
-            }
-            else if (result == 1)
-            {
-                ResultText.Text = "Отлично";
-            }
-            ResultWrongNum.Text = String.Format("Правильных ответов:  {0:0.00}%", (result * 100));
-            List<Question> wrong = test.Wrong;
+
+            // Показать оценку в текстовом варианте
+            if (result < 0.20) ResultText.Text = "Ужасно";
+            else if (result < 0.40) ResultText.Text = "Плохо";
+            else if (result < 0.55) ResultText.Text = "Так себе...";
+            else if (result < 0.79) ResultText.Text = "Хорошо";
+            else if (result < 1) ResultText.Text = "Почти отлично";
+            else if (result == 1) ResultText.Text = "Отлично";
+            
+            ResultWrongNum.Text = String.Format("Правильных ответов:  {0:0.00}%", (result * 100)); // Показать процент правильных ответов
+            List<Question> wrong = test.Wrong; // Получение неверных ответов
             // Вывод неправильных ответов
             ResultWrongQuestions.Text = "";
             foreach (Question q in wrong)
@@ -178,10 +168,10 @@ namespace TestApp
             isTesting = false;
         }
         
-
+        // Функция получения ответа пользователя на текущий вопрос
         private void GetData()
         {
-            // Get user answers
+            // Получить ответы пользователя
             if (cQuestion is Question.Select)
             {
                 int i = 0;

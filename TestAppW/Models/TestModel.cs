@@ -41,7 +41,25 @@ namespace TestApp.Models
         {
             foreach (Question q in Questions) q.Clean();
         }
-
+        /// <summary>
+        /// Перемешивает все вопросы и ответы
+        /// </summary>
+        public void Shuffle()
+        {
+            Random rng = new Random();
+            foreach (Question q in Questions) q.Shuffle();
+            // Мешаем вопросы
+            int n = Questions.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                Question value = Questions[k];
+                Questions[k] = Questions[n];
+                Questions[n] = value;
+            }
+            
+        }
 
 
         [XmlArray("questions")] // Установка имени массива в XML 
@@ -101,6 +119,10 @@ namespace TestApp.Models
         // Методы
         public abstract sbyte Grade(); // каждый вопрос может себя оценить)
         public abstract void Clean(); // Метод очистки введенных данных
+        public virtual void Shuffle()
+        {
+            
+        }//
 
         // Вопрос с текстовым ответом
         public class Edit : Question
@@ -145,6 +167,22 @@ namespace TestApp.Models
             {
                 Selected = -1;
             }
+
+            public override void Shuffle()
+            {
+                Clean();
+                Random rng = new Random();
+                int n = Answers.Count;
+                while (n > 1)
+                {
+                    n--;
+                    int k = rng.Next(n + 1);
+                    Answer value = Answers[k];
+                    Answers[k] = Answers[n];
+                    Answers[n] = value;
+                }
+            }
+
         }
 
         // Вопрос с галочками
@@ -165,6 +203,20 @@ namespace TestApp.Models
             public override void Clean()
             {
                 foreach (Answer a in Answers) a.Selected = false;
+            }
+
+            public override void Shuffle()
+            {
+                Random rng = new Random();
+                int n = Answers.Count;
+                while (n > 1)
+                {
+                    n--;
+                    int k = rng.Next(n + 1);
+                    Answer value = Answers[k];
+                    Answers[k] = Answers[n];
+                    Answers[n] = value;
+                }
             }
 
         }
