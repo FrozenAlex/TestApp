@@ -17,12 +17,12 @@ namespace TestApp
     public partial class TestWindow : Window
     {
         // Переменные
-        string currentDir;
-        public Test test = new Test();
-        private DispatcherTimer timer = null;
-        private ulong TimeLeft;
-        private bool isTesting = false;
-        public int Current;
+        string currentDir; // Папка с тестом
+        public Test test = new Test(); // Тест
+        private DispatcherTimer timer = null; // Таймер
+        private ulong TimeLeft; // Время до остановки теста
+        private bool isTesting = false; // Флаг запущен ли тест
+        public int Current; // Текущий вопрос
 
         // Свойства
         public Question cQuestion
@@ -102,8 +102,6 @@ namespace TestApp
                 EndTest();
             }
         }
-
-
         
         // Функция начать тест
         private void StartTest()
@@ -134,7 +132,6 @@ namespace TestApp
             TestContainer.Visibility = Visibility.Visible;
 
         }
-
         // Функция закончить тест и вывести результат
         private void EndTest()
         {
@@ -192,7 +189,6 @@ namespace TestApp
                 ((Question.Edit)cQuestion).wrote = TextAnswer.Text;
             }
         }
-
         // Функция, заполняющая вопросы и ответы, и управляющая видом окна в режиме тестирования
         private void UpdateView()
         {
@@ -239,7 +235,6 @@ namespace TestApp
             }
             if (cQuestion is Question.Edit) TextAnswer.Text = (cQuestion as Question.Edit).wrote;
         }
-
 
         // Обработчик кнопок навигации
         private void Nav_Click(object sender, RoutedEventArgs e)
