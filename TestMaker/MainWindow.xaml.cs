@@ -16,6 +16,7 @@ using TestApp.Methods;
 using System.ComponentModel;
 using TestApp.Models;
 using System.IO;
+using TestApp;
 
 namespace TestMaker
 {
@@ -25,64 +26,64 @@ namespace TestMaker
     public partial class MainWindow : Window
     {
         private Test test = new Test();
-        public int current;
-        
-        private Question currentQuestion
+        public int Current;
+
+        public Question cQuestion
         {
             get
-            {return test.Questions[current];}
+            {
+                if (test.Questions != null)
+                    return test.Questions[Current];
+                return null;
+            }
             set
-            {test.Questions[current] = value;}
+            {
+                test.Questions[Current] = value;
+            }
         }
+
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        private void LoadButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Вопросы (*.xml)|*.xml";
-            dlg.CheckFileExists = true;
-            dlg.Multiselect = false;
-            if (dlg.ShowDialog() == true)
-            {
-                listBox.DataContext = null;
-                CurrentQuestion.DataContext = null;
-                //test.Load
-                current = 1;
-                refresh();
-            }
-        }
-        private void refresh()
-        {
-            listBox.DataContext = test;
-        }
-
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Filter = "Вопросы (*.xml)|*.xml";
-            if (dlg.ShowDialog() == true)
+            if (String.IsNullOrEmpty(test.Path)) {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.Filter = "Вопросы (*.xml)|*.xml";
+                if (dlg.ShowDialog() == true)
+                {
+                    test.Save(dlg.FileName);
+                }
+            }
+            else
             {
-                test.Save(dlg.FileName);
-                test = null;
+                test.Save(test.Path);
             }
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: заставить работать добавление вопроса и ответа + удаление
-            //var q = new TextQuestion();
-            //q.Text = "Text";
-            //q.Cost = 1;
-           // var a = new Answer();
-           // a.Text = "aaaa";
-           // a.Right = false;
-            //listBox.DataContext = null;
-           // test.Questions.Add(q); //ItemsControl.ItemsSource.
+            //Галочный Радио Текстовый
+            if (QuestionTypeBox.SelectedIndex < 0 || QuestionTypeBox.SelectedIndex > 2) { return; }
+            if (QuestionTypeBox.SelectedIndex == 0)
+            {
+                var q = new Question.Select() { Text = "Selectq", Answers = new List<Question.Answer>() };
+                test.Questions.Add(q);
+            }
+            if (QuestionTypeBox.SelectedIndex == 2)
+            {
+                var q = new Question.Edit() { Text = "Edit" };
+                test.Questions.Add(q);
+            }
+            if (QuestionTypeBox.SelectedIndex == 1)
+            {
+                var q = new Question.Radio() { Text = "Radio", Answers = new List<Question.Answer>() };
+                test.Questions.Add(q);
+            }
+            UpdateList();
 
-            refresh();
+
         }
 
 
@@ -104,69 +105,96 @@ namespace TestMaker
 
         private void QuestionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            current = ((ListBox)sender).SelectedIndex;
-            if (current != -1)
+            if (Current != -1) GetData();
+            Current = ((ListBox)sender).SelectedIndex;
+            if (Current != -1)
             {
-                CurrentQuestion.Content = current;
-                TextQuestion.DataContext = currentQuestion;
-                AnswerList.DataContext = currentQuestion;
+                
+                UpdateView();
             }
             
         }
 
         private void image_Drop(object sender, DragEventArgs e)
         {
-            string[] FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            //string[] FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
         }
+        private void GetData()
+        {
+            cQuestion.Text = QuestionText.Text;
+            // Получить ответы пользователя
+            if (cQuestion is Question.Select)
+            {
+                ((Question.Select)cQuestion).Answers.Clear();
+                foreach (var answer in SelectAnswer.Items)
+                {
+                    CheckBox check = answer as CheckBox;
+                    TextBox textBox = check.Content as TextBox;
+                    Question.Answer answ = new Question.Answer() { Right = (bool)check.IsChecked, Text = textBox.Text };
+                    ((Question.Select)cQuestion).Answers.Add(answ);
+                }
+            }
 
+            if (cQuestion is Question.Radio)
+            {
+                ((Question.Radio)cQuestion).Answers.Clear();
+                foreach (var answer in RadioAnswer.Items)
+                {
+                    
+
+                    RadioButton check = answer as RadioButton;
+                    TextBox textBox = check.Content as TextBox;
+                    Question.Answer answ = new Question.Answer() { Right = (bool)check.IsChecked, Text = textBox.Text };
+                    ((Question.Radio)cQuestion).Answers.Add(answ);
+                }
+            }
+
+            if (cQuestion is Question.Edit)
+            {
+                ((Question.Edit)cQuestion).answer = TextAnswer.Text;
+            }
+        }
         private void UpdateView()
         {
             //QuestionImage.Source = cImage;
             //if (cImage != null) QuestionImage.Visibility = Visibility.Visible;
             //else QuestionImage.Visibility = Visibility.Collapsed;
 
-            //QuestionText.Text = cQuestion.Text; // Текст вопроса
-            //QuestionNumber.Text = "Вопрос " + (Current + 1) + " из " + test.Questions.Count;
+            QuestionText.Text = cQuestion.Text; // Текст вопроса
+            QuestionNumber.Text = "Вопрос " + (Current + 1) + " из " + test.Questions.Count; // Номер вопроса
 
-            //// Кнопки <>
-            //prevButton.IsEnabled = (Current >= 1);
-            //nextButton.IsEnabled = (Current < test.Questions.Count - 1);
-            //// Visibility switch
-            //SelectContainer.Visibility = (cQuestion is Question.Select) ? Visibility.Visible : Visibility.Collapsed;
-            //RadioContainer.Visibility = (cQuestion is Question.Radio) ? Visibility.Visible : Visibility.Collapsed;
-            //TextContainer.Visibility = (cQuestion is Question.Edit) ? Visibility.Visible : Visibility.Collapsed;
+            // Видимость контейнеров для различных типов вопросов
+            SelectContainer.Visibility = (cQuestion is Question.Select) ? Visibility.Visible : Visibility.Collapsed;
+            RadioContainer.Visibility = (cQuestion is Question.Radio) ? Visibility.Visible : Visibility.Collapsed;
+            TextContainer.Visibility = (cQuestion is Question.Edit) ? Visibility.Visible : Visibility.Collapsed;
 
-            //// Clean all
-            //SelectAnswer.Items.Clear();
-            //RadioAnswer.Items.Clear();
+            // Очистить все контейнеры
+            SelectAnswer.Items.Clear();
+            RadioAnswer.Items.Clear();
 
-            //// Get data
-            //if (cQuestion is Question.Select)
-            //{
-            //    foreach (var answer in ((Question.Select)cQuestion).Answers)
-            //    {
-            //        var checkbox = new CheckBox();
-            //        checkbox.Content = answer.Text;
-            //        checkbox.IsChecked = answer.Selected;
-            //        SelectAnswer.Items.Add(checkbox);
-            //    }
-            //}
+            // Заполнение различных контейнеров с ответами в зависимости от типа вопроса
+            if (cQuestion is Question.Select)
+            {
+                foreach (var answer in (cQuestion as Question.Select).Answers)
+                {
+                    var edit = new TextBox() { Text = answer.Text };
+                    var checkbox = new CheckBox() { Content = edit, IsChecked = answer.Right };
+                    SelectAnswer.Items.Add(checkbox);
+                }
+            }
 
-            //if (cQuestion is Question.Radio)
-            //{
-            //    foreach (var answer in ((Question.Radio)cQuestion).Answers)
-            //    {
-            //        var TextBlock = new TextBlock();
-            //        TextBlock.Text = answer.Text;
-            //        RadioAnswer.Items.Add(TextBlock);
-            //    }
-            //    RadioAnswer.SelectedIndex = ((Question.Radio)cQuestion).Selected;
-            //}
-
-            //if (cQuestion is Question.Edit)
-            //{
-            //    TextAnswer.Text = ((Question.Edit)cQuestion).wrote;
-            //}
+            // Если вопрос является вопросом выбора 1го правильного ответа
+            if (cQuestion is Question.Radio)
+            {
+                foreach (var answer in (cQuestion as Question.Radio).Answers)
+                {
+                    var TextBox = new TextBox() { Text = answer.Text };
+                    var radio = new RadioButton() { GroupName="group", Content = TextBox, IsChecked = answer.Right };
+                    RadioAnswer.Items.Add(radio);
+                }
+                //RadioAnswer.SelectedIndex = (cQuestion as Question.Radio).Selected;
+            }
+            if (cQuestion is Question.Edit) TextAnswer.Text = (cQuestion as Question.Edit).answer;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -184,6 +212,76 @@ namespace TestMaker
                 {
                     Pack(System.IO.Path.GetDirectoryName(myDialog.FileName),sd.FileName);
                 }
+            }
+        }
+
+        private void UpdateList()
+        {
+            QuestionList.Items.Clear();
+            foreach (Question q in test.Questions)
+            {
+                var TextBlock = new TextBlock() { Text = q.Text };
+                QuestionList.Items.Add(TextBlock);
+            }
+        }
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Вопросы (*.xml)|*.xml";
+            dialog.CheckFileExists = true;
+            dialog.Multiselect = false;
+            if (dialog.ShowDialog() == true)
+            {
+                test.Load(dialog.FileName);
+                test.Path = dialog.FileName;
+                Current = 0;
+                Field_TestName.Text = test.Name;
+                Field_TestAuthor.Text = test.Author;
+                Field_TestTime.Text = test.Time.ToString();
+                UpdateView();
+                UpdateList();
+            }
+        }
+
+        private void InfoSave_Click(object sender, RoutedEventArgs e)
+        {
+            test.Name = Field_TestName.Text;
+            test.Author = Field_TestAuthor.Text;
+            test.Time = ulong.Parse(Field_TestTime.Text);
+        }
+
+        private void AddAnswer_Click(object sender, RoutedEventArgs e)
+        {
+            if (cQuestion is Question.Select)
+            {
+                var edit = new TextBox() { Text = "Answer" };
+                var checkbox = new CheckBox() { Content = edit, IsChecked = false };
+                SelectAnswer.Items.Add(checkbox);
+            }
+
+            // Если вопрос является вопросом выбора 1го правильного ответа
+            if (cQuestion is Question.Radio)
+            {
+                var TextBox = new TextBox() { Text = "Answer" };
+                var radio = new RadioButton() { GroupName = "group", Content = TextBox, IsChecked = false };
+                RadioAnswer.Items.Add(radio);
+               
+            }
+        }
+
+        private void StartTest_Click(object sender, RoutedEventArgs e)
+        {
+            TestWindow testWindow = new TestWindow(test);
+            testWindow.ShowDialog();
+        }
+
+        private void SaveAs_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Вопросы (*.xml)|*.xml";
+            if (dlg.ShowDialog() == true)
+            {
+                test.Save(dlg.FileName);
             }
         }
     }

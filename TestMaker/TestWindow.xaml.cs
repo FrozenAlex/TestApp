@@ -93,7 +93,7 @@ namespace TestApp
                 TimeContainer.Visibility = Visibility.Visible;
                 TimeLeft = test.Time;
                 TimeLeftText.Text = TimeSpan.FromSeconds(TimeLeft).ToString(@"mm\:ss"); // Форматированый вывод времени
-
+                
             }
             else TimeContainer.Visibility = Visibility.Collapsed;
         }

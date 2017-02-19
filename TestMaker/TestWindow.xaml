@@ -78,7 +78,7 @@
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.982,-0.014" StartPoint="0,1.007">
                     <GradientStop Color="#FF0077BD" Offset="0.004"/>
-                    <GradientStop Color="#FF00263C" Offset="0.991"/>
+                    <GradientStop Color="#FF00263C" Offset="0.726"/>
                 </LinearGradientBrush>
             </Grid.Background>
 
@@ -86,11 +86,11 @@
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFE6D5D5" Offset="0"/>
-                        <GradientStop Color="#FFCFF0CF" Offset="1"/>
+                        <GradientStop Color="#FFD4D4D4" Offset="1"/>
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Grid x:Name="TestContainer" Margin="115.5,10,10,0">
+            <Grid x:Name="TestContainer" Margin="115.5,10,10,0" Visibility="Collapsed">
                 <Grid Margin="0,0,0.5,239" Background="#FFF3ECF5">
                     <TextBlock x:Name="QuestionNumber" DockPanel.Dock="Top" Text="Вопрос 2 из 10" TextAlignment="Center"  TextWrapping="Wrap" Margin="0,7.5,0,0" Height="16" VerticalAlignment="Top" d:LayoutOverrides="Height" />
                     <DockPanel LastChildFill="True" Background="White" Margin="0,30,-0.5,0" >
@@ -134,8 +134,8 @@
                     </Grid>
 
                 </Grid>
-                <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="0,0,40.5,209" Click="Nav_Click" Height="25" VerticalAlignment="Bottom" RenderTransformOrigin="-13.296,-1.48" HorizontalAlignment="Right" Width="26"/>
-                <Button x:Name="nextButton" Content="&gt;" VerticalAlignment="Bottom" Height="25" IsEnabled="True" Margin="0,0,10.5,209" Click="Nav_Click" HorizontalAlignment="Right" Width="26"/>
+                <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="517,0,0,209" Click="Nav_Click" HorizontalAlignment="Left" Width="27" Height="25" VerticalAlignment="Bottom" RenderTransformOrigin="-13.296,-1.48"/>
+                <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="26" Height="25" IsEnabled="True" Margin="548,0,0,209" Click="Nav_Click"/>
             </Grid>
             <!--Visibility="Collapsed"-->
             <Grid x:Name="ResultContainer" Margin="116,10,10,10" Background="White" Visibility="Collapsed">
@@ -151,16 +151,9 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Grid x:Name="TimeContainer" HorizontalAlignment="Left" Margin="6,0,0,10" Width="102" Background="White" Height="57" VerticalAlignment="Bottom">
-                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Осталось времени:" VerticalAlignment="Top" Width="102" Height="18" TextAlignment="Center" FontSize="10">
-                    <TextBlock.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                            <GradientStop Color="#FFAAF900" Offset="0"/>
-                            <GradientStop Color="White" Offset="1"/>
-                        </LinearGradientBrush>
-                    </TextBlock.Background>
-                </TextBlock>
-                <TextBlock x:Name="TimeLeftText" HorizontalAlignment="Left" Margin="0,18,0,10" TextWrapping="Wrap" Text="22:22" VerticalAlignment="Center" Width="102" Height="29" TextAlignment="Center" FontSize="22" FontFamily="Segoe UI Light"/>
+            <Grid x:Name="TimeContainer" HorizontalAlignment="Left" Height="57" Margin="6,116,0,0" VerticalAlignment="Top" Width="102" Background="White">
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Осталось времени:" VerticalAlignment="Top" Width="102" Height="13" TextAlignment="Center" FontSize="10"/>
+                <TextBlock x:Name="TimeLeftText" HorizontalAlignment="Left" Margin="0,18,0,10" TextWrapping="Wrap" Text="22:22" VerticalAlignment="Center" Width="102" Height="29" TextAlignment="Center" FontSize="20"/>
             </Grid>
         </Grid>
     </Grid>

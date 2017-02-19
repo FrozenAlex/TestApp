@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_7E8F577D0931329E3BA36EE5A8738818"
+        "MsmKey" = "8:_0AAD1822D05D27ADCE0BBA2DBF7AAD00"
         "OwnerKey" = "8:_CC4EA01001DE417DAFB2FFFB4B379925"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EFB6D7DC43A8BCA13BFCC166E98EF104"
+        "OwnerKey" = "8:_0AAD1822D05D27ADCE0BBA2DBF7AAD00"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_CC4EA01001DE417DAFB2FFFB4B379925"
         "MsmSig" = "8:_UNDEFINED"
@@ -34,7 +40,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7E8F577D0931329E3BA36EE5A8738818"
+        "OwnerKey" = "8:_0AAD1822D05D27ADCE0BBA2DBF7AAD00"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EFB6D7DC43A8BCA13BFCC166E98EF104"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -94,6 +106,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -124,20 +144,51 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7E8F577D0931329E3BA36EE5A8738818"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0AAD1822D05D27ADCE0BBA2DBF7AAD00"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 "ScatterAssemblies"
                 {
-                    "_7E8F577D0931329E3BA36EE5A8738818"
+                    "_0AAD1822D05D27ADCE0BBA2DBF7AAD00"
                     {
-                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Name" = "8:System.IO.Compression.FileSystem.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Newtonsoft.Json.dll"
+            "SourcePath" = "8:System.IO.Compression.FileSystem.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D67F9A42B90D4C448CF5C366F2C4EF19"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EFB6D7DC43A8BCA13BFCC166E98EF104"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:TRUE"
+            "AssemblyAsmDisplayName" = "8:System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_EFB6D7DC43A8BCA13BFCC166E98EF104"
+                    {
+                    "Name" = "8:System.IO.Compression.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.IO.Compression.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D67F9A42B90D4C448CF5C366F2C4EF19"
@@ -212,7 +263,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TestInstallation"
         "ProductCode" = "8:{7F0E161A-5C42-4DE5-AD7E-E8784ACAE0D9}"
-        "PackageCode" = "8:{77C8F9D2-FBD7-4AE6-BADB-7BF1D50B2C14}"
+        "PackageCode" = "8:{A47329DB-703A-4E0B-B47E-1C77BB739114}"
         "UpgradeCode" = "8:{3FB08897-314A-416F-AFF3-D13049646A58}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

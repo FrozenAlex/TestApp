@@ -9,11 +9,6 @@
                 <Setter Property="Foreground" Value="Black" />
                 <Setter Property="FontSize" Value="11" />
                 <Setter Property="Background" Value="White"/>
-                <Setter Property="Effect">
-                    <Setter.Value>
-                        <DropShadowEffect Color="Black" Direction="320" ShadowDepth="1" BlurRadius="3" Opacity="0.5" />
-                    </Setter.Value>
-                </Setter>
                 <Setter Property="Border.CornerRadius" Value="3,3,3,3" />
             </Style>
         </ResourceDictionary>

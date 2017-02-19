@@ -34,9 +34,6 @@ namespace TestApp
                 Directory.CreateDirectory(System.IO.Path.Combine(AppData, "pack"));
             if (!Directory.Exists(System.IO.Path.Combine(AppData, "temp")))
                 Directory.CreateDirectory(System.IO.Path.Combine(AppData, "temp"));
-
-
-
             UpdateList();
         }
 
