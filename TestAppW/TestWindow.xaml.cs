@@ -98,9 +98,6 @@ namespace TestApp
             else TimeContainer.Visibility = Visibility.Collapsed;
         }
 
-
-
-
         // Старт таймера
         private void TimerStart()
         {
