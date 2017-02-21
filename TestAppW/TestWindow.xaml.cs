@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -72,6 +73,15 @@ namespace TestApp
             test.Load(Path.Combine(folderPath,"test.xml"));
             InitializeComponent();
 
+            // Заполнить приветствие
+            TestName.Text = test.Name;
+            if (String.IsNullOrWhiteSpace(test.Author)) TestAuthor.Visibility = Visibility.Collapsed;
+            else TestAuthor.Text = "Автор теста: " + test.Author;
+            TestQuestionsNum.Text = "Вопросов: " + test.Questions.Count;
+            if (test.Time<1) TestTime.Text = "Времени на тест: не ограничено";
+            else TestTime.Text = "Времени на тест: " + TimeSpan.FromSeconds(test.Time).ToString(@"mm\:ss");
+            WelcomeContainer.Visibility = Visibility.Visible;
+
             Title = test.Name; // Установить заголовок окна на название теста
             if (test.Time > 1)
             {
@@ -88,6 +98,16 @@ namespace TestApp
             currentDir = Path.GetDirectoryName(test.Path);
             InitializeComponent();
             Title = test.Name; // Установить заголовок окна на название теста
+            
+            // Заполнить приветствие
+            TestName.Text = test.Name;
+            if (String.IsNullOrWhiteSpace(test.Author)) TestAuthor.Visibility = Visibility.Collapsed;
+            else TestAuthor.Text = "Автор теста: " + test.Author;
+            TestQuestionsNum.Text = "Вопросов: " + test.Questions.Count;
+            if (test.Time < 1) TestTime.Text = "Времени на тест: не ограничено";
+            else TestTime.Text = "Времени на тест: " + TimeSpan.FromSeconds(test.Time).ToString(@"mm\:ss");
+            WelcomeContainer.Visibility = Visibility.Visible;
+
             if (test.Time > 1)
             {
                 TimeContainer.Visibility = Visibility.Visible;
@@ -124,6 +144,8 @@ namespace TestApp
             // Установить флаг теста
             isTesting = true;
 
+            
+
             // Инициализация теста
             test.Clean(); // Сбросить все ответы
             test.Shuffle(); // Перемешать тест
@@ -145,30 +167,37 @@ namespace TestApp
             // Видимость теста и результата
             ResultContainer.Visibility = Visibility.Collapsed;
             TestContainer.Visibility = Visibility.Visible;
+            WelcomeContainer.Visibility = Visibility.Collapsed;
 
         }
         // Функция закончить тест и вывести результат
         private void EndTest()
         {
             GetData(); // Получить ответ на текущий вопрос
-            
+
             TestContainer.Visibility = Visibility.Collapsed;
             ResultContainer.Visibility = Visibility.Visible;
+            WelcomeContainer.Visibility = Visibility.Collapsed;
 
             BeginButton.IsEnabled = true;
             EndButton.IsEnabled = false;
-            
-            float result = test.Grade(); // Получить оценку
 
+            Result result = test.Grade(); // Получить оценку
             // Показать оценку в текстовом варианте
-            if (result < 0.20) ResultText.Text = "Ужасно";
-            else if (result < 0.40) ResultText.Text = "Плохо";
-            else if (result < 0.55) ResultText.Text = "Так себе...";
-            else if (result < 0.79) ResultText.Text = "Хорошо";
-            else if (result < 1) ResultText.Text = "Почти отлично";
-            else if (result == 1) ResultText.Text = "Отлично";
+            if (result.Score < 0.20) ResultText.Text = "Ужасно";
+            else if (result.Score < 0.40) ResultText.Text = "Плохо";
+            else if (result.Score < 0.55) ResultText.Text = "Так себе...";
+            else if (result.Score < 0.79) ResultText.Text = "Хорошо";
+            else if (result.Score < 1) ResultText.Text = "Почти отлично";
+            else if (result.Score == 1) ResultText.Text = "Отлично";
             
-            ResultWrongNum.Text = String.Format("Правильных ответов:  {0:0.00}%", (result * 100)); // Показать процент правильных ответов
+            ResultPercent.Text = String.Format("Правильно {0:0.00}%", (result.Score * 100)); // Показать процент правильных ответов
+            ResultRightNum.Text = "Верных ответов: " + result.Right;
+            ResultWrongNum.Text = "Неверных ответов: " + result.Wrong;
+            ResultUnansweredNum.Text = "Не отвеченых: " + result.NotAnswered;
+
+            if ((result.Wrong + result.NotAnswered) == 0) ResultWrong.Visibility = Visibility.Collapsed;
+
             List<Question> wrong = test.Wrong; // Получение неверных ответов
             // Вывод неправильных ответов
             ResultWrongQuestions.Text = "";
@@ -228,9 +257,17 @@ namespace TestApp
             SelectAnswer.Items.Clear();
             RadioAnswer.Items.Clear();
 
+            // Изменить текст подсказки
+            if (cQuestion is Question.Edit) AnswerHelper.Content = "Введите ответ на вопрос:";
+            if (cQuestion is Question.Radio) AnswerHelper.Content = "Выберите один правильный ответ";
+            if (cQuestion is Question.Select) AnswerHelper.Content = "Выберите один или несколько правильных ответов:";
+
+
+
             // Заполнение различных контейнеров с ответами в зависимости от типа вопроса
             if (cQuestion is Question.Select)
             {
+                
                 foreach (var answer in (cQuestion as Question.Select).Answers)
                 {
                     var checkbox = new CheckBox() { Content = answer.Text, IsChecked = answer.Selected };
@@ -303,6 +340,25 @@ namespace TestApp
                 }
             }
 
+        }
+        private void ShowHelp()
+        {
+            try
+            {
+                Process SysInfo = new System.Diagnostics.Process();
+                SysInfo.StartInfo.ErrorDialog = true;
+                SysInfo.StartInfo.FileName = "Help.chm";
+                SysInfo.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1) ShowHelp();
         }
     }
 }

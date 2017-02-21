@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,20 @@ namespace TestApp
             }
         }
 
-
+        private void ShowHelp()
+        {
+            try
+            {
+                Process SysInfo = new System.Diagnostics.Process();
+                SysInfo.StartInfo.ErrorDialog = true;
+                SysInfo.StartInfo.FileName = "Help.chm";
+                SysInfo.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private void LectureList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TextRange textRange;
@@ -61,6 +75,11 @@ namespace TestApp
             TestWindow test = new TestWindow(dir);
             test.Show();
             Close();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1) ShowHelp();
         }
     }
 }

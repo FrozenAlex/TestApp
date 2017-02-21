@@ -32,7 +32,7 @@ namespace TestApp.Models
             {
                 List<Question> wrong = new List<Question>();
                 foreach (Question q in Questions) // Пробираю через все вопросы
-                    if (q.Grade() != 1) wrong.Add(q); // Если неверен то добавляю вопрос
+                    if (q.Grade() == 0) wrong.Add(q); // Если неверен то добавляю вопрос
                 return wrong;
             }
         }
@@ -94,14 +94,20 @@ namespace TestApp.Models
             this.Path = path;
             Save();
         }
-        public float Grade()
+        public Result Grade()
         {
-            int max = Questions.Count; // Все вопросы по одному очку
-            float score = 0; // Кол-во очков
+            Result result = new Result();
+            result.Count = Questions.Count; // Все вопросы по одному очку
             foreach (Question q in Questions) // Пробираю через все вопросы
-                if (q.Grade() == 1) score++;      
-            if (score == 0) return 0;
-            return score / max;
+            {
+                var grade = q.Grade();
+                if (grade == 1) result.Right++;
+                if (grade == -1) result.NotAnswered++;
+                if (grade == 0) result.Wrong++;
+            }
+
+            result.Score = (float)result.Right / result.Count;
+            return result;
         }
         
     }
@@ -194,8 +200,13 @@ namespace TestApp.Models
             public override sbyte Grade()
             {
                 int Error = 0;
+                int sCount = 0;
                 foreach (Answer a in Answers)
+                {
                     if (a.Right != a.Selected) Error++;
+                    if (a.Selected) sCount++;
+                }
+                if (sCount == 0) return -1;
                 if (Error == 0) return 1;
                 return 0;
             }
@@ -228,8 +239,17 @@ namespace TestApp.Models
             public string Text { get; set; } // Текст варианта ответа
             public bool Right { get; set; } // Правильность ответа
         }
-
     }
+
+    public class Result
+    {
+        public float Score = 0;
+        public int Wrong = 0;
+        public int Right = 0;
+        public int NotAnswered = 0;
+        public int Count;
+    }
+
 }
 
 

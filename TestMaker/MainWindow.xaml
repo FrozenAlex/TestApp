@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TestMaker"
         xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="TestMaker.MainWindow"
         mc:Ignorable="d"
-        Title="Редактор теста" Height="474" Width="960">
+        Title="Редактор теста" Height="474" Width="960" WindowStartupLocation="CenterScreen">
     <Window.Resources>
     </Window.Resources>
 
@@ -27,6 +27,12 @@
             <MenuItem Header="Справка" />
         </Menu>
         <Grid>
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF899AFF" Offset="0"/>
+                    <GradientStop Color="#FFA245FF" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
@@ -36,7 +42,7 @@
                 <ColumnDefinition Width="274"/>
             </Grid.ColumnDefinitions>
             <ListBox x:Name="QuestionList"  Margin="10,10,10,37" SelectionChanged="QuestionBox_SelectionChanged"/>
-            <Button x:Name="AddButton" Content="+" HorizontalAlignment="Left" Margin="195,0,0,10" Width="25" Click="AddButton_Click" Height="22" VerticalAlignment="Bottom"/>
+            <Button x:Name="AddButton" Content="+" HorizontalAlignment="Left" Margin="195,0,0,10" Width="25" Click="AddButton_Click" Height="22" VerticalAlignment="Bottom" Background="White"/>
             <TextBox x:Name="Field_TestName" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,33,0,0" TextWrapping="Wrap" Text="Названия" VerticalAlignment="Top" Width="149"/>
             <Grid x:Name="QuestionContainer" Grid.Column="1" Margin="10">
                 <TextBox x:Name="QuestionText" Height="84" Margin="10,23,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>

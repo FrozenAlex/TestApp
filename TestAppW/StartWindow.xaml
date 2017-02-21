@@ -5,12 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestApp"
         mc:Ignorable="d"
-        Title="ТестApp 1.0" Height="327.251" Width="434.652" WindowStartupLocation="CenterScreen">
+        Title="ТестApp 1.0" Height="339.579" Width="418.962" WindowStartupLocation="CenterScreen" Icon="Resources/icon.ico" KeyDown="Window_KeyDown">
     <Grid>
-        <ListBox x:Name="TestList" HorizontalAlignment="Left" Margin="10,31,0,34" Width="407" Drop="TestList_Drop" AllowDrop="True"/>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF4BBCFD" Offset="0"/>
+                <GradientStop Color="#FF0E6889" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <ListBox x:Name="TestList" Margin="10,31,10,40" Drop="TestList_Drop" AllowDrop="True">
+            <ListBox.ItemContainerStyle>
+                <Style>
+                    <Setter Property="ListBoxItem.Padding" Value="8"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Выберите тест, который хотите пройти:" VerticalAlignment="Top"/>
-        <Button x:Name="button1" Content="Тест" HorizontalAlignment="Right" Margin="0,0,95,10" VerticalAlignment="Bottom" Width="75" Click="button1_Click"/>
-        <Button x:Name="button2" Content="Обучение" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="button2_Click"/>
+        <Button x:Name="button1" Content="Тест" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="74" Click="button1_Click" Height="25">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFA0C7FF" Offset="0"/>
+                    <GradientStop Color="#FF35A097" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="button2" Content="Обучение" HorizontalAlignment="Right" Margin="0,0,89,10" VerticalAlignment="Bottom" Width="74" Click="button2_Click" Height="25">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFDE1111" Offset="0"/>
+                    <GradientStop Color="#FFD65423" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="button" Content="Справка" HorizontalAlignment="Right" Margin="0,0,168,10" VerticalAlignment="Bottom" Width="72" Height="25" Click="button_Click"/>
 
     </Grid>
 </Window>

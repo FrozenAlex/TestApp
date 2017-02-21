@@ -82,8 +82,6 @@ namespace TestMaker
                 test.Questions.Add(q);
             }
             UpdateList();
-
-
         }
 
 
@@ -140,8 +138,6 @@ namespace TestMaker
                 ((Question.Radio)cQuestion).Answers.Clear();
                 foreach (var answer in RadioAnswer.Items)
                 {
-                    
-
                     RadioButton check = answer as RadioButton;
                     TextBox textBox = check.Content as TextBox;
                     Question.Answer answ = new Question.Answer() { Right = (bool)check.IsChecked, Text = textBox.Text };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,20 @@ namespace TestApp
                 Directory.CreateDirectory(System.IO.Path.Combine(AppData, "temp"));
             UpdateList();
         }
-
+        private void ShowHelp()
+        {
+            try
+            {
+                Process SysInfo = new System.Diagnostics.Process();
+                SysInfo.StartInfo.ErrorDialog = true;
+                SysInfo.StartInfo.FileName = "Help.chm";
+                SysInfo.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private void UpdateList()
         {
             DirectoryInfo d = new DirectoryInfo(System.IO.Path.Combine(AppData, "pack"));//Assuming Test is your Folder
@@ -97,6 +111,16 @@ namespace TestApp
                 }
                 UpdateList();
             }
+        }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            ShowHelp();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1) ShowHelp();
         }
     }
 }

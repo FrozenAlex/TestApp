@@ -5,23 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestApp"
         mc:Ignorable="d"
-        Title="Test App" Height="516" Width="718" BorderThickness="0" Closing="Window_Closing" Background="#FFB4B4B4" WindowStartupLocation="CenterScreen" Visibility="Visible" Opacity="0.94">
+        Title="Test App" Height="523" Width="720" BorderThickness="0" Closing="Window_Closing" Background="#FFB4B4B4" WindowStartupLocation="CenterScreen" Visibility="Visible" Opacity="0.94">
     <Window.Resources>
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Foreground" Value="Black" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Background" Value="#FFFFF9F9"/>
-            <Setter Property="Padding" Value="4px"/>
-            <Setter Property="Border.CornerRadius" Value="3,3,3,3" />
-        </Style>
     </Window.Resources>
     <Window.Effect>
         <DropShadowEffect BlurRadius="74" Direction="228" ShadowDepth="14"/>
     </Window.Effect>
     <Grid>
-        <Grid.Effect>
-            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
-        </Grid.Effect>
         <Grid Background="#FFF1F1F1" Height="21" VerticalAlignment="Top" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -78,82 +68,131 @@
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.982,-0.014" StartPoint="0,1.007">
                     <GradientStop Color="#FF0077BD" Offset="0.004"/>
-                    <GradientStop Color="#FF00263C" Offset="0.726"/>
+                    <GradientStop Color="#FF00263C" Offset="0.991"/>
                 </LinearGradientBrush>
             </Grid.Background>
 
-            <Button x:Name="BeginButton" Content="Начать тест" Margin="6,10,0,0" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Click="BeginButton_Click">
+            <Button x:Name="BeginButton" Content="Начать тест" Margin="6,10,0,0" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Click="BeginButton_Click" FontSize="12" FontFamily="Microsoft PhagsPa">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFE6D5D5" Offset="0"/>
-                        <GradientStop Color="#FFD4D4D4" Offset="1"/>
+                        <GradientStop Color="#FFA6FFA6" Offset="1"/>
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
             <Grid x:Name="TestContainer" Margin="115.5,10,10,0" Visibility="Collapsed">
-                <Grid Margin="0,0,0.5,239" Background="#FFF3ECF5">
-                    <TextBlock x:Name="QuestionNumber" DockPanel.Dock="Top" Text="Вопрос 2 из 10" TextAlignment="Center"  TextWrapping="Wrap" Margin="0,7.5,0,0" Height="16" VerticalAlignment="Top" d:LayoutOverrides="Height" />
-                    <DockPanel LastChildFill="True" Background="White" Margin="0,30,-0.5,0" >
-
+                <Grid Margin="0,0,0.5,239">
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF83FFD2" Offset="0"/>
+                            <GradientStop Color="#FF723232" Offset="0.916"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <TextBlock x:Name="QuestionNumber" DockPanel.Dock="Top" Text="Вопрос 2 из 10" TextAlignment="Center"  TextWrapping="Wrap" Margin="0,7.5,0,0" Height="16" VerticalAlignment="Top" d:LayoutOverrides="Height" FontStyle="Italic" />
+                    <DockPanel LastChildFill="True" Background="#FFEEFDFF" Margin="0,30,-0.5,0">
                         <Image x:Name="QuestionImage"  Height="150" DockPanel.Dock="Top" Visibility="Collapsed" />
-                        <TextBlock x:Name="QuestionText"  VerticalAlignment="Center" TextAlignment="Center" MinHeight="30" TextWrapping="Wrap" Text="Текст вопроса" FontSize="18" Padding="7,0" />
+                        <TextBlock x:Name="QuestionText"  VerticalAlignment="Center" TextAlignment="Center" MinHeight="30" TextWrapping="Wrap" Text="Текст вопроса" FontSize="20" Padding="7,0" FontFamily="Sitka Heading" />
                     </DockPanel>
                 </Grid>
 
-                <Grid x:Name = "AnswerContainer" Margin="0,0,0.5,10" Height="224" VerticalAlignment="Bottom">
-                    <Grid x:Name="TextContainer" Background="#FFE0E0E0"  Visibility="Collapsed">
-                        <Label Content="Введите ответ на вопрос:"></Label>
-                        <TextBox x:Name="TextAnswer" Margin="0,26.5,0,0" TextAlignment="Center" FontSize="14"/>
+                <Grid x:Name = "AnswerContainer" Margin="0,0,0.5,10" Height="224" VerticalAlignment="Bottom" >
+                    <Grid.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#FF59A7E8" Offset="1"/>
+                            <GradientStop Color="#FFFFD6D6"/>
+                        </RadialGradientBrush>
+                    </Grid.Background>
+                    <Label x:Name="AnswerHelper" Content="Выберите правильный ответ:" Foreground="White" FontFamily="Leelawadee UI" Margin="0,1,-0.5,0"/>
+                    <Grid x:Name="TextContainer" Visibility="Collapsed">
+                        <TextBox x:Name="TextAnswer" Padding="2,2,2,2"  Margin="2,30,2,2" TextAlignment="Center" FontSize="14" BorderBrush="White" BorderThickness="0"/>
                     </Grid>
-                    <Grid x:Name="RadioContainer" Background="#FFE0E0E0" Visibility="Collapsed">
-                        <Label Content="Выберите правильный ответ:"></Label>
-                        <ListBox x:Name="RadioAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="0,26.5,0,0">
+                    <Grid x:Name="RadioContainer" Visibility="Collapsed">
+                        <ListBox x:Name="RadioAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="2,30,2,2">
                             <RadioButton Content="Вариант 1"/>
                             <RadioButton Content="Вариант 2"/>
                             <RadioButton Content="Вариант 3"/>
                             <ListBox.ItemContainerStyle>
                                 <Style>
-                                    <Setter Property="ListBoxItem.Padding" Value="7"/>
+                                    <Setter Property="ListBoxItem.Padding" Value="8"/>
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
-                    <Grid x:Name="SelectContainer" Background="#FFE0E0E0">
-                        <Label Content="Выберите правильные ответы:"></Label>
-                        <ListBox x:Name="SelectAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="0,26.5,0,0">
+                    <Grid x:Name="SelectContainer">
+                        <ListBox x:Name="SelectAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="2,30,2,2">
                             <CheckBox Content="Вариант 1"/>
                             <CheckBox Content="Вариант 2"/>
                             <CheckBox Content="Вариант 3"/>
                             <ListBox.ItemContainerStyle>
                                 <Style>
-                                    <Setter Property="ListBoxItem.Padding" Value="7"/>
+                                    <Setter Property="ListBoxItem.Padding" Value="8"/>
                                 </Style>
-
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
 
                 </Grid>
-                <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="517,0,0,209" Click="Nav_Click" HorizontalAlignment="Left" Width="27" Height="25" VerticalAlignment="Bottom" RenderTransformOrigin="-13.296,-1.48"/>
-                <Button x:Name="nextButton" Content="&gt;" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="26" Height="25" IsEnabled="True" Margin="548,0,0,209" Click="Nav_Click"/>
+                <Button x:Name="prevButton" Content="&lt;" IsEnabled="True" Margin="0,0,47,204" Click="Nav_Click" Height="28" VerticalAlignment="Bottom" RenderTransformOrigin="-13.296,-1.48" HorizontalAlignment="Right" Width="30" BorderThickness="0" FontFamily="SimSun-ExtB" FontSize="22">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF727272" Offset="1"/>
+                            <GradientStop Color="#FFEEECEC"/>
+                            <GradientStop Color="#FEE9E7E7" Offset="0.92"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="nextButton" Content="&gt;" VerticalAlignment="Bottom" Height="28" IsEnabled="True" Margin="0,0,12,204" Click="Nav_Click" HorizontalAlignment="Right" Width="30" BorderThickness="0" FontFamily="SimSun-ExtB" FontSize="22">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF727272" Offset="1"/>
+                            <GradientStop Color="#FFEEECEC"/>
+                            <GradientStop Color="#FEE9E7E7" Offset="0.92"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
             </Grid>
             <!--Visibility="Collapsed"-->
             <Grid x:Name="ResultContainer" Margin="116,10,10,10" Background="White" Visibility="Collapsed">
-                <TextBlock x:Name="ResultText" Height="38" Margin="10,10,2,0" TextWrapping="Wrap" Text="Результат: " VerticalAlignment="Top" TextAlignment="Center" FontSize="22"/>
-                <TextBlock x:Name="ResultWrongQuestions" Margin="10,81,2,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="384"/>
-                <TextBlock x:Name="ResultWrongNum" Height="28" Margin="10,48,2,0" TextWrapping="Wrap" Text="Неправильных ответов:" VerticalAlignment="Top" TextAlignment="Center" FontSize="18"/>
+                <StackPanel>
+                    <TextBlock x:Name="ResultText"  TextWrapping="Wrap" Text="Результат:"  TextAlignment="Center" FontSize="24" FontFamily="Sylfaen" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="ResultPercent"  TextWrapping="Wrap" Text="50%" VerticalAlignment="Top" TextAlignment="Center" FontSize="11" Margin="0,-2,0,0"/>
+                    <TextBlock x:Name="ResultRightNum"  TextWrapping="Wrap" Text="Верных:"  TextAlignment="Center" FontSize="14" Margin="10,12,10,0" />
+                    <TextBlock x:Name="ResultWrongNum"  TextWrapping="Wrap" Text="Неверных:" VerticalAlignment="Top" TextAlignment="Center" FontSize="14" Margin="10,0" />
+                    <TextBlock x:Name="ResultUnansweredNum"  TextWrapping="Wrap" Text="Без ответа:"  TextAlignment="Center" FontSize="14"  Margin="10,0"/>
+                    <TextBlock x:Name="ResultWrong"  Text="Вопросы с неверным ответом" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Top" FontFamily="Sitka Heading" FontSize="18" Margin="0,6,0,7"/>
+                    <TextBlock x:Name="ResultWrongQuestions" Text="Вопросы с неверным ответом"  TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Margin="10,0" LineHeight="16"/>
+                </StackPanel>
             </Grid>
-            <Button x:Name="EndButton" Content="Закончить тест" Click="EndButton_Click" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Margin="6,63,0,0" IsEnabled="False">
+            <Grid x:Name="WelcomeContainer" Margin="116,10,10,10" Background="White" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock x:Name="TestName" TextWrapping="Wrap" Text="Основы языка программирования C#" TextAlignment="Center" FontSize="22" FontFamily="Sylfaen" Margin="0,16,0,0"/>
+                    <TextBlock x:Name="TestAuthor" TextWrapping="Wrap" Text="Автор теста: Александр Усков" FontSize="11" TextAlignment="Center"/>
+                    <TextBlock x:Name="TestTime" TextWrapping="Wrap" Text="Время на сдачу теста: 10 минут" FontSize="15" Margin="10,9,10,0"></TextBlock>
+                    <TextBlock x:Name="TestQuestionsNum" TextWrapping="Wrap" Text="Число вопросов: 10" FontSize="15" Margin="10,0"/>
+                </StackPanel>
+                <TextBlock x:Name="Resultm" Height="28" TextWrapping="Wrap" Text="Для начала теста нажмите на кнопку начать тест" TextAlignment="Center" FontSize="16" VerticalAlignment="Bottom" Foreground="#FFAEAEAE"/>
+            </Grid>
+
+
+
+            <Button x:Name="EndButton" Content="Закончить тест" Click="EndButton_Click" HorizontalAlignment="Left" Width="102" Height="48" VerticalAlignment="Top" Margin="6,63,0,0" FontFamily="Ebrima" FontSize="12" IsEnabled="False">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFA86E6E" Offset="0"/>
-                        <GradientStop Color="#FFA211CD" Offset="1"/>
+                        <GradientStop Color="#FFE89797" Offset="0"/>
+                        <GradientStop Color="#FFC41CF5" Offset="1"/>
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Grid x:Name="TimeContainer" HorizontalAlignment="Left" Height="57" Margin="6,116,0,0" VerticalAlignment="Top" Width="102" Background="White">
-                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Осталось времени:" VerticalAlignment="Top" Width="102" Height="13" TextAlignment="Center" FontSize="10"/>
-                <TextBlock x:Name="TimeLeftText" HorizontalAlignment="Left" Margin="0,18,0,10" TextWrapping="Wrap" Text="22:22" VerticalAlignment="Center" Width="102" Height="29" TextAlignment="Center" FontSize="20"/>
+            <Grid x:Name="TimeContainer" HorizontalAlignment="Left" Margin="6,0,0,10" Width="102" Background="White" Height="57" VerticalAlignment="Bottom">
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Осталось времени:" VerticalAlignment="Top" Width="102" Height="18" TextAlignment="Center" FontSize="10">
+                    <TextBlock.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                            <GradientStop Color="#FF00F9C0" Offset="0"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Background>
+                </TextBlock>
+                <TextBlock x:Name="TimeLeftText" HorizontalAlignment="Left" Margin="0,18,0,10" TextWrapping="Wrap" Text="22:22" VerticalAlignment="Center" Width="102" Height="29" TextAlignment="Center" FontSize="22" FontFamily="Malgun Gothic"/>
             </Grid>
         </Grid>
     </Grid>

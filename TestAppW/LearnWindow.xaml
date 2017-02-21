@@ -5,27 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestApp"
         mc:Ignorable="d"
-        Title="Обучение" Height="592.398" Width="804.706">
+        Title="Обучение" Height="592.398" Width="804.706" Icon="Resources/icon.ico" KeyDown="Window_KeyDown">
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF4585AA" Offset="0"/>
+                <GradientStop Color="#FF9523BF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="237*"/>
-            <ColumnDefinition Width="560*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="LectureList" HorizontalAlignment="Left" Margin="10,34,0,10" Width="138" SelectionChanged="LectureList_SelectionChanged">
+        <ListBox x:Name="LectureList" HorizontalAlignment="Left" Margin="10,54,0,10" Width="138" SelectionChanged="LectureList_SelectionChanged">
+            <ListBox.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFDCFFDF" Offset="0"/>
+                    <GradientStop Color="#FFF5D2FB" Offset="1"/>
+                </LinearGradientBrush>
+            </ListBox.Background>
             <ListBox.ItemContainerStyle>
                 <Style>
                     <Setter Property="ListBoxItem.Padding" Value="7"/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <RichTextBox x:Name="LectureView" Margin="153,10,10,10" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
+        <RichTextBox x:Name="LectureView" Margin="153,10,10,10" VerticalScrollBarVisibility="Auto" Background="#FFFDFDFD">
             <FlowDocument>
                 <Paragraph>
                     <Run Text="Выберите лекцию слева"/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Button x:Name="button" Content="Начать тест" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="138" Height="21" Click="button_Click"/>
+        <Button x:Name="button" Content="Начать тест" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="138" Height="39" Click="button_Click">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE6D5D5" Offset="0"/>
+                    <GradientStop Color="#FFA6FFA6" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
 
     </Grid>
 </Window>
