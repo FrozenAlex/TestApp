@@ -89,13 +89,13 @@
                 <ComboBoxItem Content="Текстовый"/>
             </ComboBox>
             <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,33,0,0" TextWrapping="Wrap" Text="Название теста" VerticalAlignment="Top" Width="85"/>
-            <TextBox x:Name="Field_TestAuthor" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,55,0,0" TextWrapping="Wrap" Text="Alex" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="Field_TestAuthor" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
             <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,55,0,0" TextWrapping="Wrap" Text="Автор теста" VerticalAlignment="Top" Width="85"/>
             <TextBox x:Name="Field_TestTime" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,77,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="149"/>
             <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,77,0,0" TextWrapping="Wrap" Text="Время на тест" VerticalAlignment="Top" Width="85"/>
-            <TextBox x:Name="Field_TestPass" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,99,0,0" TextWrapping="Wrap" Text="Pass" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="Field_TestPass" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,99,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
             <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,99,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Width="85"/>
-            <TextBlock x:Name="textBlock1" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="20" TextAlignment="Center" FontSize="14"><Run Text="Информация о тесте"/></TextBlock>
+            <TextBlock x:Name="textBlock1" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="20" TextAlignment="Center" FontSize="14"/> 
             <Button x:Name="InfoSave" Content="Сохр" Grid.Column="2" Margin="212,0,10,0" Click="InfoSave_Click" Height="20" VerticalAlignment="Top"/>
         </Grid>
     </DockPanel>
