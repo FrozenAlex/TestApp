@@ -1,7 +1,5 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,10 +43,7 @@ namespace TestApp
             get
             {
                 if (Current >= test.Questions.Count || Current < 0) return null;
-                if (test.Questions[Current].Image == null)
-                {
-                    return null;
-                }
+                if (test.Questions[Current].Image == null) return null;
                 else
                 {
                     var uri = new Uri(Path.Combine(currentDir, "image",test.Questions[Current].Image));
@@ -57,8 +52,7 @@ namespace TestApp
                     image.CacheOption = BitmapCacheOption.OnLoad;
                     image.UriSource = uri;
                     image.EndInit();
-                    var bit = image;
-                    return bit;
+                    return image;
                 }
             }
         }
@@ -74,6 +68,8 @@ namespace TestApp
             test.Load(Path.Combine(folderPath,"test.xml"));
             InitializeComponent();
 
+            Title = test.Name; // Установить заголовок окна на название теста
+            
             // Заполнить приветствие
             TestName.Text = test.Name;
             if (String.IsNullOrWhiteSpace(test.Author)) TestAuthor.Visibility = Visibility.Collapsed; // Скрыть автора если его нет
@@ -83,39 +79,12 @@ namespace TestApp
             else TestTime.Text = "Времени на тест: " + TimeSpan.FromSeconds(test.Time).ToString(@"mm\:ss");
             WelcomeContainer.Visibility = Visibility.Visible; // Видимость контейнера приветствия
 
-            Title = test.Name; // Установить заголовок окна на название теста
+            
             if (test.Time > 1) // Показать таймер если время ограничено иначе скрыть
             {
                 TimeContainer.Visibility = Visibility.Visible;
                 TimeLeft = test.Time;
                 TimeLeftText.Text = TimeSpan.FromSeconds(TimeLeft).ToString(@"mm\:ss"); // Форматированый вывод времени
-            }
-            else TimeContainer.Visibility = Visibility.Collapsed;
-            
-        }
-        // Для создателя тестов
-        public TestWindow(Test ttest)
-        {
-            test = ttest;
-            currentDir = Path.GetDirectoryName(test.Path);
-            InitializeComponent();
-            Title = test.Name; // Установить заголовок окна на название теста
-            
-            // Заполнить приветствие
-            TestName.Text = test.Name;
-            if (String.IsNullOrWhiteSpace(test.Author)) TestAuthor.Visibility = Visibility.Collapsed;
-            else TestAuthor.Text = "Автор теста: " + test.Author;
-            TestQuestionsNum.Text = "Вопросов: " + test.Questions.Count;
-            if (test.Time < 1) TestTime.Text = "Времени на тест: не ограничено";
-            else TestTime.Text = "Времени на тест: " + TimeSpan.FromSeconds(test.Time).ToString(@"mm\:ss");
-            WelcomeContainer.Visibility = Visibility.Visible;
-
-            if (test.Time > 1)
-            {
-                TimeContainer.Visibility = Visibility.Visible;
-                TimeLeft = test.Time;
-                TimeLeftText.Text = TimeSpan.FromSeconds(TimeLeft).ToString(@"mm\:ss"); // Форматированый вывод времени
-
             }
             else TimeContainer.Visibility = Visibility.Collapsed;
         }
@@ -192,7 +161,8 @@ namespace TestApp
             else if (result.Score < 1) ResultText.Text = "Почти отлично";
             else if (result.Score == 1) ResultText.Text = "Отлично";
             
-            ResultPercent.Text = String.Format("Правильно {0:0.00}%", (result.Score * 100)); // Показать процент правильных ответов
+            // Statistics
+            ResultPercent.Text = String.Format("Правильно {0:0.00}%", (result.Score * 100));
             ResultRightNum.Text = "Верных ответов: " + result.Right;
             ResultWrongNum.Text = "Неверных ответов: " + result.Wrong;
             ResultUnansweredNum.Text = "Не отвеченых: " + result.NotAnswered;
@@ -206,8 +176,9 @@ namespace TestApp
             {
                 ResultWrongQuestions.Text += q.Text + "\n";
             }
-            if (timer != null) timer.Stop();
-            isTesting = false;
+            if (timer != null) timer.Stop(); // Stop timer if exists
+
+            isTesting = false; // Reset test flag
         }
         
         // Функция получения ответа пользователя на текущий вопрос
@@ -216,23 +187,17 @@ namespace TestApp
             // Получить ответы пользователя
             if (cQuestion is Question.Select)
             {
-                int i = 0;
                 foreach (var answer in SelectAnswer.Items)
                 {
-                    ((Question.Select)cQuestion).Answers[i].Selected = (bool)((CheckBox)answer).IsChecked;
-                    i++;
+                    ((Question.Select)cQuestion).Answers[SelectAnswer.Items.IndexOf(answer)].Selected = (bool)(answer as CheckBox).IsChecked;
                 }
             }
 
             if (cQuestion is Question.Radio)
-            {
                 ((Question.Radio)cQuestion).Selected = RadioAnswer.SelectedIndex;
-            }
-
+            
             if (cQuestion is Question.Edit)
-            {
                 ((Question.Edit)cQuestion).wrote = TextAnswer.Text;
-            }
         }
         // Функция, заполняющая вопросы и ответы, и управляющая видом окна в режиме тестирования
         private void UpdateView()
@@ -296,28 +261,6 @@ namespace TestApp
             UpdateView(); 
         }
 
-        
-        // Функции для работы кастомного заголовка окна
-        private void OnDragMoveWindow(object sender, MouseButtonEventArgs e)
-        {
-            this.DragMove();
-        }
-        private void OnMinimizeWindow(object sender, MouseButtonEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-        private void OnMaximizeWindow(object sender, MouseButtonEventArgs e)
-        {
-            if (this.WindowState == WindowState.Maximized)
-                this.WindowState = WindowState.Normal;
-            else if (this.WindowState == WindowState.Normal)
-                this.WindowState = WindowState.Maximized;
-        }
-        private void OnCloseWindow(object sender, MouseButtonEventArgs e)
-        {
-            this.Close();
-        }
-
         // Обработчики нажатий некоторых кнопок (Которые вызывают функцию выше)
         private void BeginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -354,7 +297,7 @@ namespace TestApp
                 }
                 if (e.Key == Key.Right)
                 {
-                    GetData(); // Получить ответ на текущий вопрос
+                    GetData();
                     if (Current > 0) Current++;
                     UpdateView();
                 }

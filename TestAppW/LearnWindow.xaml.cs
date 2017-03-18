@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -33,34 +31,33 @@ namespace TestApp
                 LectureList.Items.Add(lect);
             }
         }
-
-        
+ 
         private void LectureList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TextRange textRange;
             FileStream fileStream;
-                string lectureName = ((TextBlock)LectureList.Items[LectureList.SelectedIndex]).Text;
-                string file = Path.Combine(currentDirectory, "lecture", lectureName + ".rtf");
-                if (File.Exists(file))
+            string lectureName = ((TextBlock)LectureList.Items[LectureList.SelectedIndex]).Text;
+            string file = Path.Combine(currentDirectory, "lecture", lectureName + ".rtf");
+            if (File.Exists(file))
+            {
+                textRange = new TextRange(LectureView.Document.ContentStart, LectureView.Document.ContentEnd);
+                using (fileStream = new FileStream(file, FileMode.OpenOrCreate))
                 {
-                    textRange = new TextRange(LectureView.Document.ContentStart, LectureView.Document.ContentEnd);
-                    using (fileStream = new FileStream(file, FileMode.OpenOrCreate))
-                    {
-                        textRange.Load(fileStream, DataFormats.Rtf);
-                    }
+                    textRange.Load(fileStream, DataFormats.Rtf);
                 }
-        }
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            TestWindow test = new TestWindow(currentDirectory);
-            test.Show();
-            Close();
+            }
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F1) Helper.ShowHelp();
+        }
+
+        private void BeginTest_Click(object sender, RoutedEventArgs e)
+        {
+            TestWindow test = new TestWindow(currentDirectory);
+            test.Show();
+            Close();
         }
     }
 }

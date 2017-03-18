@@ -1,5 +1,4 @@
 ﻿using Ionic.Zip;
-using System.Diagnostics;
 using System.IO;
 
 namespace TestApp.Libs
@@ -22,7 +21,6 @@ namespace TestApp.Libs
             {
                 zip.Password = password;
                 //zip.AlternateEncoding = System.Text.Encoding.UTF8;
-                zip.ExtractProgress += Zip_ExtractProgress; // Set listener
                 zip.ExtractAll(unpackDirectory, ExtractExistingFileAction.OverwriteSilently);
             }
         }
@@ -39,10 +37,6 @@ namespace TestApp.Libs
                 zip.AddDirectory(dirToPack);
                 zip.Save(zipTarget);
             }
-        }
-        private static void Zip_ExtractProgress(object sender, ExtractProgressEventArgs e)
-        {
-
         }
     }
 }

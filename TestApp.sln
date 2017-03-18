@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestAppW\TestApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMaker", "TestMaker\TestMaker.csproj", "{6DAD3991-DE0C-46AC-837E-FBF4C520E99D}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TestInstallation", "TestInstallation\TestInstallation.vdproj", "{6D057F08-D240-4754-A3FA-DB4ACA11BE57}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,8 +21,6 @@ Global
 		{6DAD3991-DE0C-46AC-837E-FBF4C520E99D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DAD3991-DE0C-46AC-837E-FBF4C520E99D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DAD3991-DE0C-46AC-837E-FBF4C520E99D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D057F08-D240-4754-A3FA-DB4ACA11BE57}.Debug|Any CPU.ActiveCfg = Debug
-		{6D057F08-D240-4754-A3FA-DB4ACA11BE57}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

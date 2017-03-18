@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace TestApp.Models
@@ -25,10 +21,6 @@ namespace TestApp.Models
         public string Author { get; set; }
         [XmlAttribute]
         public bool Encrypted { get; set; }
-        //[XmlAttribute]
-        //public int Attempts { get; set; } // Число попыток
-        //[XmlAttribute]
-        //public int Count { get; set; } // Число вопросов
         [XmlIgnore]
         public List<Question> Wrong // Список неверных вопросов
         {
@@ -61,17 +53,11 @@ namespace TestApp.Models
                 Questions[k] = Questions[n];
                 Questions[n] = value;
             }
-            
         }
-
-
         [XmlArray("questions")] // Установка имени массива в XML 
         [XmlArrayItem("question")] // Установка названия элемента массива в XML
         public List<Question> Questions { get; set; } // Список вопросов
-        public Test() { }
-
-        
-        public int Load(string path) // 
+        public void Load(string path) // 
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Test)); // Создание сериализатора
             FileStream fs = new FileStream(path, FileMode.Open); // Создание потока файла
@@ -83,8 +69,6 @@ namespace TestApp.Models
             this.Author = test.Author;
             Path = path;
             fs.Close();
-            return 0;
-
         }
         public void Save()
         {
@@ -112,9 +96,7 @@ namespace TestApp.Models
             result.Score = (float)result.Right / result.Count;
             return result;
         }
-        
     }
-
 
     [XmlInclude(typeof(Question.Edit))]
     [XmlInclude(typeof(Question.Radio))]
@@ -241,6 +223,7 @@ namespace TestApp.Models
         }
     }
 
+    // Return value
     public class Result
     {
         public float Score = 0;
@@ -249,8 +232,4 @@ namespace TestApp.Models
         public int NotAnswered = 0;
         public int Count;
     }
-
 }
-
-
-

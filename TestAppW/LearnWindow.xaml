@@ -29,6 +29,7 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
+        
         <RichTextBox x:Name="LectureView" Margin="153,10,10,10" VerticalScrollBarVisibility="Auto" Background="#FFFDFDFD">
             <FlowDocument>
                 <Paragraph>
@@ -36,7 +37,8 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Button x:Name="button" Content="Начать тест" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="138" Height="39" Click="button_Click">
+        
+        <Button x:Name="BeginTest" Content="Начать тест" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="138" Height="39" Click="BeginTest_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE6D5D5" Offset="0"/>
