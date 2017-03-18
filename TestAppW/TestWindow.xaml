@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestApp"
         mc:Ignorable="d"
-        Title="Test App" Height="523" Width="720" BorderThickness="0" Closing="Window_Closing" Background="#FFB4B4B4" WindowStartupLocation="CenterScreen" Visibility="Visible" Opacity="0.94" Icon="Resources/icon.ico" KeyDown="Window_KeyDown">
+        Title="Test App" Height="566" Width="720" BorderThickness="0" Closing="Window_Closing" Background="#FFB4B4B4" WindowStartupLocation="CenterScreen" Visibility="Visible" Opacity="0.94" Icon="Resources/icon.ico" KeyDown="Window_KeyDown">
     <Window.Resources>
     </Window.Resources>
     <Window.Effect>
@@ -90,7 +90,7 @@
                     </Grid.Background>
                     <TextBlock x:Name="QuestionNumber" DockPanel.Dock="Top" Text="Вопрос 2 из 10" TextAlignment="Center"  TextWrapping="Wrap" Margin="0,7.5,0,0" Height="16" VerticalAlignment="Top" d:LayoutOverrides="Height" FontStyle="Italic" />
                     <DockPanel LastChildFill="True" Background="#FFEEFDFF" Margin="0,30,-0.5,0">
-                        <Image x:Name="QuestionImage"  Height="150" DockPanel.Dock="Top" Visibility="Collapsed" />
+                        <Image x:Name="QuestionImage"  Height="200" DockPanel.Dock="Top" Visibility="Collapsed" />
                         <TextBlock x:Name="QuestionText"  VerticalAlignment="Center" TextAlignment="Center" MinHeight="30" TextWrapping="Wrap" Text="Текст вопроса" FontSize="20" Padding="7,0" FontFamily="Sitka Heading" />
                     </DockPanel>
                 </Grid>

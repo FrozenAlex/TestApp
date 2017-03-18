@@ -11,9 +11,10 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu x:Name="menu"  DockPanel.Dock="Top" FontFamily="Lucida Calligraphy">
+        <Menu x:Name="menu"  DockPanel.Dock="Top" FontFamily="Lucida Calligraphy" Background="#FFF9F9F9">
             <MenuItem Header="Файл" >
                 <MenuItem Header="Открыть" Click="Open_Click" />
+                <MenuItem Header="Новый проект" Click="NewTest_Click" />
                 <MenuItem Header="Открыть папку" />
                 <MenuItem Header="Открыть архив" />
                 <MenuItem Header="Сохранить" Click="Save_Click" />
@@ -29,8 +30,8 @@
         <Grid>
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF899AFF" Offset="0"/>
-                    <GradientStop Color="#FFA245FF" Offset="1"/>
+                    <GradientStop Color="White" Offset="0"/>
+                    <GradientStop Color="White" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.RowDefinitions>
@@ -42,8 +43,8 @@
                 <ColumnDefinition Width="274"/>
             </Grid.ColumnDefinitions>
             <ListBox x:Name="QuestionList"  Margin="10,10,10,37" SelectionChanged="QuestionBox_SelectionChanged"/>
-            <Button x:Name="AddButton" Content="+" HorizontalAlignment="Left" Margin="195,0,0,10" Width="25" Click="AddButton_Click" Height="22" VerticalAlignment="Bottom" Background="White"/>
-            <TextBox x:Name="Field_TestName" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,33,0,0" TextWrapping="Wrap" Text="Названия" VerticalAlignment="Top" Width="149"/>
+            <Button x:Name="AddButton" Content="+" HorizontalAlignment="Left" Margin="163,0,0,10" Width="25" Click="AddButton_Click" Height="22" VerticalAlignment="Bottom" Background="#FFD1FF55"/>
+            <TextBox x:Name="Field_TestName" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,8,0,0" TextWrapping="Wrap" Text="Название теста" VerticalAlignment="Top" Width="149"/>
             <Grid x:Name="QuestionContainer" Grid.Column="1" Margin="10">
                 <TextBox x:Name="QuestionText" Height="84" Margin="10,23,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 <TextBlock x:Name="QuestionNumber" TextWrapping="Wrap" Text="Номер вопроса" VerticalAlignment="Top" Height="25" TextAlignment="Center" Margin="10,0"/>
@@ -66,7 +67,7 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
-                    <Grid x:Name="SelectContainer" Background="#FFE0E0E0">
+                    <Grid x:Name="SelectContainer" Background="#FFADAFDA">
                         <Label Content="Выберите правильные ответы:"></Label>
                         <ListBox x:Name="SelectAnswer" MinHeight="30" BorderBrush="White" IsSynchronizedWithCurrentItem="False" Margin="0,26.5,0,0">
                             <CheckBox Content="Вариант 1"/>
@@ -80,23 +81,24 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
-                    <Button x:Name="AddAnswer" Content="Add" Margin="0,3,0,0" Click="AddAnswer_Click" HorizontalAlignment="Right" Width="44" Height="20" VerticalAlignment="Top"/>
+                    <Button x:Name="AddAnswer" Content="Добавить" Margin="0,3,75,0" Click="AddAnswer_Click" HorizontalAlignment="Right" Width="60" Height="20" VerticalAlignment="Top" Background="#FFC8F0C9"/>
+                    <Button x:Name="DeleteAnswer" Content="Удалить" Margin="0,3,10,0" Click="DeleteAnswer_Click" HorizontalAlignment="Right" Width="60" Height="20" VerticalAlignment="Top" Background="#FFF0C8C8"/>
                 </Grid>
             </Grid>
-            <ComboBox x:Name="QuestionTypeBox" HorizontalAlignment="Left" Margin="10,0,0,10" Width="180" SelectedIndex="0" Height="22" VerticalAlignment="Bottom">
+            <ComboBox x:Name="QuestionTypeBox" HorizontalAlignment="Left" Margin="10,0,0,10" Width="148" SelectedIndex="0" Height="22" VerticalAlignment="Bottom">
                 <ComboBoxItem Content="Галочный"/>
                 <ComboBoxItem Content="Радио"/>
                 <ComboBoxItem Content="Текстовый"/>
             </ComboBox>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,33,0,0" TextWrapping="Wrap" Text="Название теста" VerticalAlignment="Top" Width="85"/>
-            <TextBox x:Name="Field_TestAuthor" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,55,0,0" TextWrapping="Wrap" Text="Автор теста" VerticalAlignment="Top" Width="85"/>
-            <TextBox x:Name="Field_TestTime" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,77,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="149"/>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,77,0,0" TextWrapping="Wrap" Text="Время на тест" VerticalAlignment="Top" Width="85"/>
-            <TextBox x:Name="Field_TestPass" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,99,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
-            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,99,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Width="85"/>
-            <TextBlock x:Name="textBlock1" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="20" TextAlignment="Center" FontSize="14"/> 
-            <Button x:Name="InfoSave" Content="Сохр" Grid.Column="2" Margin="212,0,10,0" Click="InfoSave_Click" Height="20" VerticalAlignment="Top"/>
+            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,8,0,0" TextWrapping="Wrap" Text="Название теста" VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="Field_TestAuthor" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
+            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,30,0,0" TextWrapping="Wrap" Text="Автор теста" VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="Field_TestTime" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,52,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="59"/>
+            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,52,0,0" TextWrapping="Wrap" Text="Время на тест" VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="Field_TestPass" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="115,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
+            <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="10,74,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Width="85"/>
+            <TextBlock x:Name="textBlock1" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="20" TextAlignment="Center" FontSize="14"/>
+            <Button x:Name="DeleteButton" Content="-" HorizontalAlignment="Left" Margin="193,0,0,10" Width="25" Click="DeleteButton_Click" Height="22" VerticalAlignment="Bottom" Background="#FFFBB5B5"/>
         </Grid>
     </DockPanel>
 </Window>

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using TestApp.Libs;
 using TestApp.Models;
 
 namespace TestApp
@@ -75,15 +76,15 @@ namespace TestApp
 
             // Заполнить приветствие
             TestName.Text = test.Name;
-            if (String.IsNullOrWhiteSpace(test.Author)) TestAuthor.Visibility = Visibility.Collapsed;
-            else TestAuthor.Text = "Автор теста: " + test.Author;
-            TestQuestionsNum.Text = "Вопросов: " + test.Questions.Count;
-            if (test.Time<1) TestTime.Text = "Времени на тест: не ограничено";
+            if (String.IsNullOrWhiteSpace(test.Author)) TestAuthor.Visibility = Visibility.Collapsed; // Скрыть автора если его нет
+            else TestAuthor.Text = "Автор теста: " + test.Author; // Вывести автора
+            TestQuestionsNum.Text = "Вопросов: " + test.Questions.Count; // Вывести количество вопросов
+            if (test.Time<1) TestTime.Text = "Времени на тест: не ограничено"; // Время на тест
             else TestTime.Text = "Времени на тест: " + TimeSpan.FromSeconds(test.Time).ToString(@"mm\:ss");
-            WelcomeContainer.Visibility = Visibility.Visible;
+            WelcomeContainer.Visibility = Visibility.Visible; // Видимость контейнера приветствия
 
             Title = test.Name; // Установить заголовок окна на название теста
-            if (test.Time > 1)
+            if (test.Time > 1) // Показать таймер если время ограничено иначе скрыть
             {
                 TimeContainer.Visibility = Visibility.Visible;
                 TimeLeft = test.Time;
@@ -92,6 +93,7 @@ namespace TestApp
             else TimeContainer.Visibility = Visibility.Collapsed;
             
         }
+        // Для создателя тестов
         public TestWindow(Test ttest)
         {
             test = ttest;
@@ -129,29 +131,26 @@ namespace TestApp
         // Функция, вызываемая по срабатыванию таймера
         private void TimerTick(object sender, EventArgs e)
         {
-            TimeLeft--;
+            TimeLeft--; 
             TimeLeftText.Text = TimeSpan.FromSeconds(TimeLeft).ToString(@"mm\:ss");
-            if (TimeLeft <= 0)
+            if (TimeLeft <= 0) // Если времени не осталось то закончить тест за пользователя
             {
                 (sender as DispatcherTimer).Stop();
-                EndTest();
+                EndTest(); 
             }
         }
         
         // Функция начать тест
         private void StartTest()
         {
-            // Установить флаг теста
+            // Установить флаг теста (Запущен ли тест)
             isTesting = true;
-
-            
 
             // Инициализация теста
             test.Clean(); // Сбросить все ответы
             test.Shuffle(); // Перемешать тест
             if (test.Questions != null) Current = 0; // Сбросить текущий вопрос на 1й
             
-
             // Кнопки начать тест и закончить тест
             BeginButton.IsEnabled = false;
             EndButton.IsEnabled = true;
@@ -164,21 +163,23 @@ namespace TestApp
             }
 
             UpdateView(); // Заполнить вид
+
             // Видимость теста и результата
             ResultContainer.Visibility = Visibility.Collapsed;
             TestContainer.Visibility = Visibility.Visible;
             WelcomeContainer.Visibility = Visibility.Collapsed;
-
         }
         // Функция закончить тест и вывести результат
         private void EndTest()
         {
             GetData(); // Получить ответ на текущий вопрос
 
+            // Видимость контейнеров
             TestContainer.Visibility = Visibility.Collapsed;
             ResultContainer.Visibility = Visibility.Visible;
             WelcomeContainer.Visibility = Visibility.Collapsed;
 
+            // Отключение и включение нужных кнопок
             BeginButton.IsEnabled = true;
             EndButton.IsEnabled = false;
 
@@ -196,7 +197,7 @@ namespace TestApp
             ResultWrongNum.Text = "Неверных ответов: " + result.Wrong;
             ResultUnansweredNum.Text = "Не отвеченых: " + result.NotAnswered;
 
-            if ((result.Wrong + result.NotAnswered) == 0) ResultWrong.Visibility = Visibility.Collapsed;
+            if ((result.Wrong) == 0) ResultWrong.Visibility = Visibility.Collapsed;
 
             List<Question> wrong = test.Wrong; // Получение неверных ответов
             // Вывод неправильных ответов
@@ -259,15 +260,12 @@ namespace TestApp
 
             // Изменить текст подсказки
             if (cQuestion is Question.Edit) AnswerHelper.Content = "Введите ответ на вопрос:";
-            if (cQuestion is Question.Radio) AnswerHelper.Content = "Выберите один правильный ответ";
+            if (cQuestion is Question.Radio) AnswerHelper.Content = "Выберите один правильный ответ:";
             if (cQuestion is Question.Select) AnswerHelper.Content = "Выберите один или несколько правильных ответов:";
-
-
 
             // Заполнение различных контейнеров с ответами в зависимости от типа вопроса
             if (cQuestion is Question.Select)
             {
-                
                 foreach (var answer in (cQuestion as Question.Select).Answers)
                 {
                     var checkbox = new CheckBox() { Content = answer.Text, IsChecked = answer.Selected };
@@ -297,6 +295,7 @@ namespace TestApp
             if (button.Name == "prevButton") Current--;
             UpdateView(); 
         }
+
         
         // Функции для работы кастомного заголовка окна
         private void OnDragMoveWindow(object sender, MouseButtonEventArgs e)
@@ -341,24 +340,26 @@ namespace TestApp
             }
 
         }
-        private void ShowHelp()
-        {
-            try
-            {
-                Process SysInfo = new System.Diagnostics.Process();
-                SysInfo.StartInfo.ErrorDialog = true;
-                SysInfo.StartInfo.FileName = "Help.chm";
-                SysInfo.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
+        // Обработчики нажатий кнопок
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F1) ShowHelp();
+            if (e.Key == Key.F1) Helper.ShowHelp();
+            if (isTesting)
+            {
+                if (e.Key == Key.Left)
+                {
+                    GetData(); // Получить ответ на текущий вопрос
+                    if (Current < test.Questions.Count) Current--;
+                    UpdateView();
+                }
+                if (e.Key == Key.Right)
+                {
+                    GetData(); // Получить ответ на текущий вопрос
+                    if (Current > 0) Current++;
+                    UpdateView();
+                }
+            }
+            
         }
     }
 }

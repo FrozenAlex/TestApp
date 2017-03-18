@@ -147,7 +147,7 @@ namespace TestApp
 
             // Инициализация теста
             test.Clean(); // Сбросить все ответы
-            test.Shuffle(); // Перемешать тест
+            //test.Shuffle(); // Перемешать тест
             if (test.Questions != null) Current = 0; // Сбросить текущий вопрос на 1й
             
 

@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using TestApp.Libs;
 
 namespace TestApp
 {
@@ -20,17 +14,17 @@ namespace TestApp
     /// </summary>
     public partial class LearnWindow : Window
     {
-        string dir;
+        string currentDirectory;
         public LearnWindow()
         {
             InitializeComponent();
         }
-
-        public LearnWindow(string currentDir)
+  
+        public LearnWindow(string dir)
         {
-            dir = currentDir;
+            currentDirectory = dir;
             InitializeComponent();
-            DirectoryInfo d = new DirectoryInfo(System.IO.Path.Combine(dir, "lecture")); // как же
+            DirectoryInfo d = new DirectoryInfo(Path.Combine(currentDirectory, "lecture")); // как же
             FileInfo[] Files = d.GetFiles("*.rtf"); // Собираем файлы RTF.
             foreach (FileInfo file in Files)
             {
@@ -40,46 +34,33 @@ namespace TestApp
             }
         }
 
-        private void ShowHelp()
-        {
-            try
-            {
-                Process SysInfo = new System.Diagnostics.Process();
-                SysInfo.StartInfo.ErrorDialog = true;
-                SysInfo.StartInfo.FileName = "Help.chm";
-                SysInfo.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        
         private void LectureList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TextRange textRange;
             FileStream fileStream;
                 string lectureName = ((TextBlock)LectureList.Items[LectureList.SelectedIndex]).Text;
-                string file = System.IO.Path.Combine(dir, "lecture", lectureName + ".rtf");
-                if (System.IO.File.Exists(file))
+                string file = Path.Combine(currentDirectory, "lecture", lectureName + ".rtf");
+                if (File.Exists(file))
                 {
                     textRange = new TextRange(LectureView.Document.ContentStart, LectureView.Document.ContentEnd);
-                    using (fileStream = new System.IO.FileStream(file, System.IO.FileMode.OpenOrCreate))
+                    using (fileStream = new FileStream(file, FileMode.OpenOrCreate))
                     {
-                        textRange.Load(fileStream, System.Windows.DataFormats.Rtf);
+                        textRange.Load(fileStream, DataFormats.Rtf);
                     }
                 }
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            TestWindow test = new TestWindow(dir);
+            TestWindow test = new TestWindow(currentDirectory);
             test.Show();
             Close();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F1) ShowHelp();
+            if (e.Key == Key.F1) Helper.ShowHelp();
         }
     }
 }

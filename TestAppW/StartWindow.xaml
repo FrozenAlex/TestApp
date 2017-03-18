@@ -10,7 +10,7 @@
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FF4BBCFD" Offset="0"/>
-                <GradientStop Color="#FF0E6889" Offset="1"/>
+                <GradientStop Color="#FF4F8DA4" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
         <ListBox x:Name="TestList" Margin="10,31,10,40" Drop="TestList_Drop" AllowDrop="True">
@@ -20,8 +20,8 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Выберите тест, который хотите пройти:" VerticalAlignment="Top"/>
-        <Button x:Name="button1" Content="Тест" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="74" Click="button1_Click" Height="25">
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Выберите тест, который хотите пройти:" VerticalAlignment="Top" Foreground="Black"/>
+        <Button x:Name="Button_StartTest" Content="Тест" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="74" Click="StartTest_Click" Height="25" FontSize="12" FontFamily="Segoe UI Semilight">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFA0C7FF" Offset="0"/>
@@ -29,7 +29,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <Button x:Name="button2" Content="Обучение" HorizontalAlignment="Right" Margin="0,0,89,10" VerticalAlignment="Bottom" Width="74" Click="button2_Click" Height="25">
+        <Button x:Name="Button_StartLearn" Content="Обучение" HorizontalAlignment="Right" Margin="0,0,89,10" VerticalAlignment="Bottom" Width="74" Click="StartLearn_Click" Height="25" FontSize="12" FontFamily="Segoe UI Semilight">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFDE1111" Offset="0"/>
@@ -37,7 +37,9 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <Button x:Name="button" Content="Справка" HorizontalAlignment="Right" Margin="0,0,168,10" VerticalAlignment="Bottom" Width="72" Height="25" Click="button_Click"/>
+        <Button x:Name="Button_ShowHelp" Content="Справка" HorizontalAlignment="Right" Margin="0,0,168,10" VerticalAlignment="Bottom" Width="72" Height="25" Click="ShowHelp_Click"/>
+        <Button x:Name="Button_Remove" Content="-" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="25" Click="Remove_Click" HorizontalAlignment="Left" Width="26"/>
+        <Button x:Name="Button_Add" Content="+" Margin="41,0,0,10" VerticalAlignment="Bottom" Height="25" Click="Add_Click" HorizontalAlignment="Left" Width="26"/>
 
     </Grid>
 </Window>

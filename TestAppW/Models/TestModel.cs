@@ -25,6 +25,10 @@ namespace TestApp.Models
         public string Author { get; set; }
         [XmlAttribute]
         public bool Encrypted { get; set; }
+        //[XmlAttribute]
+        //public int Attempts { get; set; } // Число попыток
+        //[XmlAttribute]
+        //public int Count { get; set; } // Число вопросов
         [XmlIgnore]
         public List<Question> Wrong // Список неверных вопросов
         {
@@ -105,7 +109,6 @@ namespace TestApp.Models
                 if (grade == -1) result.NotAnswered++;
                 if (grade == 0) result.Wrong++;
             }
-
             result.Score = (float)result.Right / result.Count;
             return result;
         }
@@ -124,10 +127,7 @@ namespace TestApp.Models
         // Методы
         public abstract sbyte Grade(); // каждый вопрос может себя оценить)
         public abstract void Clean(); // Метод очистки введенных данных
-        public virtual void Shuffle()
-        {
-            
-        }//
+        public virtual void Shuffle(){} // Перемешка ответов
 
         // Вопрос с текстовым ответом
         public class Edit : Question

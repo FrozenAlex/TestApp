@@ -4,19 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using TestApp.Methods;
 using System.ComponentModel;
 using TestApp.Models;
 using System.IO;
 using TestApp;
+using TestApp.Libs;
 
 namespace TestMaker
 {
@@ -27,6 +21,7 @@ namespace TestMaker
     {
         private Test test = new Test();
         public int Current;
+        public bool ro = false;
 
         public Question cQuestion
         {
@@ -53,11 +48,17 @@ namespace TestMaker
                 dlg.Filter = "Вопросы (*.xml)|*.xml";
                 if (dlg.ShowDialog() == true)
                 {
+                    test.Name = Field_TestName.Text;
+                    test.Author = Field_TestAuthor.Text;
+                    test.Time = ulong.Parse(Field_TestTime.Text);
                     test.Save(dlg.FileName);
                 }
             }
             else
             {
+                test.Name = Field_TestName.Text;
+                test.Author = Field_TestAuthor.Text;
+                test.Time = ulong.Parse(Field_TestTime.Text);
                 test.Save(test.Path);
             }
         }
@@ -68,49 +69,27 @@ namespace TestMaker
             if (QuestionTypeBox.SelectedIndex < 0 || QuestionTypeBox.SelectedIndex > 2) { return; }
             if (QuestionTypeBox.SelectedIndex == 0)
             {
-                var q = new Question.Select() { Text = "Selectq", Answers = new List<Question.Answer>() };
+                var q = new Question.Select() { Text = "Select " + test.Questions.Count, Answers = new List<Question.Answer>() };
                 test.Questions.Add(q);
             }
             if (QuestionTypeBox.SelectedIndex == 2)
             {
-                var q = new Question.Edit() { Text = "Edit" };
+                var q = new Question.Edit() { Text = "Edit " + test.Questions.Count };
                 test.Questions.Add(q);
             }
             if (QuestionTypeBox.SelectedIndex == 1)
             {
-                var q = new Question.Radio() { Text = "Radio", Answers = new List<Question.Answer>() };
+                var q = new Question.Radio() { Text = "Radio " + test.Questions.Count, Answers = new List<Question.Answer>() };
                 test.Questions.Add(q);
             }
             UpdateList();
         }
 
-
-        public void Pack(string folder, string zip)
-        {
-            if (Directory.Exists(folder))
-            {
-                System.IO.Compression.ZipFile.CreateFromDirectory(folder, zip, System.IO.Compression.CompressionLevel.Optimal,false,Encoding.UTF8);
-            }
-        }
-
-        public void Unpack(string zip, string reciever)
-        {
-            if (Directory.Exists(reciever))
-                Directory.Delete(reciever, true);
-            Directory.CreateDirectory(reciever);
-            System.IO.Compression.ZipFile.ExtractToDirectory(zip, reciever, Encoding.UTF8);
-        }
-
         private void QuestionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Current != -1) GetData();
-            Current = ((ListBox)sender).SelectedIndex;
-            if (Current != -1)
-            {
-                
-                UpdateView();
-            }
-            
+            if (!ro && Current != -1) GetData(); // получить вопрос
+            Current = ((ListBox)sender).SelectedIndex; // Получить выбранный вопрос
+            if (Current != -1) UpdateView();
         }
 
         private void image_Drop(object sender, DragEventArgs e)
@@ -206,7 +185,7 @@ namespace TestMaker
                 //sd.CheckFileExists = true;
                 if (sd.ShowDialog() == true)
                 {
-                    Pack(System.IO.Path.GetDirectoryName(myDialog.FileName),sd.FileName);
+                    Compression.Pack(Path.GetDirectoryName(myDialog.FileName), sd.FileName);
                 }
             }
         }
@@ -239,18 +218,11 @@ namespace TestMaker
             }
         }
 
-        private void InfoSave_Click(object sender, RoutedEventArgs e)
-        {
-            test.Name = Field_TestName.Text;
-            test.Author = Field_TestAuthor.Text;
-            test.Time = ulong.Parse(Field_TestTime.Text);
-        }
-
         private void AddAnswer_Click(object sender, RoutedEventArgs e)
         {
             if (cQuestion is Question.Select)
             {
-                var edit = new TextBox() { Text = "Answer" };
+                var edit = new TextBox() { Text = "Ответ " + SelectAnswer.Items.Count };
                 var checkbox = new CheckBox() { Content = edit, IsChecked = false };
                 SelectAnswer.Items.Add(checkbox);
             }
@@ -258,7 +230,7 @@ namespace TestMaker
             // Если вопрос является вопросом выбора 1го правильного ответа
             if (cQuestion is Question.Radio)
             {
-                var TextBox = new TextBox() { Text = "Answer" };
+                var TextBox = new TextBox() { Text = "Ответ "+ RadioAnswer.Items.Count };
                 var radio = new RadioButton() { GroupName = "group", Content = TextBox, IsChecked = false };
                 RadioAnswer.Items.Add(radio);
                
@@ -267,6 +239,10 @@ namespace TestMaker
 
         private void StartTest_Click(object sender, RoutedEventArgs e)
         {
+            GetData();
+            test.Name = Field_TestName.Text;
+            test.Author = Field_TestAuthor.Text;
+            test.Time = ulong.Parse(Field_TestTime.Text);
             TestWindow testWindow = new TestWindow(test);
             testWindow.ShowDialog();
         }
@@ -279,6 +255,37 @@ namespace TestMaker
             {
                 test.Save(dlg.FileName);
             }
+        }
+
+        private void DeleteAnswer_Click(object sender, RoutedEventArgs e)
+        {
+            if (cQuestion is Question.Select)
+            {
+                if (SelectAnswer.SelectedIndex >= 0) SelectAnswer.Items.RemoveAt(SelectAnswer.SelectedIndex);
+            }
+
+            // Если вопрос является вопросом выбора 1го правильного ответа
+            if (cQuestion is Question.Radio)
+            {
+                if (RadioAnswer.SelectedIndex >= 0) RadioAnswer.Items.RemoveAt(RadioAnswer.SelectedIndex);
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (QuestionList.SelectedIndex>=0) test.Questions.RemoveAt(QuestionList.SelectedIndex);
+            ro = true;
+            UpdateList();
+            ro = false;
+        }
+
+        private void NewTest_Click(object sender, RoutedEventArgs e)
+        {
+            test.Questions = new List<Question>();
+            test.Questions.Add(new Question.Select() { Text = "Select", Answers = new List<Question.Answer>() });
+            Current = 0;
+            UpdateView();
+            UpdateList();
         }
     }
 }

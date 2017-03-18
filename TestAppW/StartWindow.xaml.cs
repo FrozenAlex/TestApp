@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using TestApp.Libs;
 
 namespace TestApp
 {
@@ -21,36 +22,25 @@ namespace TestApp
     public partial class StartWindow : Window
     {
         public string AppData;
+        string tempDir;
         public StartWindow()
         {
             InitializeComponent();
 
             // Combine the base folder with your specific folder....
-            AppData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TestApp");
+            AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TestApp");
+            tempDir = Path.Combine(AppData, "temp");
 
-            // Check if folder exists and if not, create it
-            if (!Directory.Exists(AppData))
-                Directory.CreateDirectory(AppData);
-            if (!Directory.Exists(System.IO.Path.Combine(AppData,"pack")))
-                Directory.CreateDirectory(System.IO.Path.Combine(AppData, "pack"));
-            if (!Directory.Exists(System.IO.Path.Combine(AppData, "temp")))
-                Directory.CreateDirectory(System.IO.Path.Combine(AppData, "temp"));
+            // Check if app folders exist and if not, create them
+            if (!Directory.Exists(AppData)) Directory.CreateDirectory(AppData); // AppData/TestApp
+            if (!Directory.Exists(Path.Combine(AppData,"pack"))) // AppData/TestApp/pack
+                Directory.CreateDirectory(Path.Combine(AppData, "pack"));
+            if (!Directory.Exists(Path.Combine(AppData, "temp")))// AppData/TestApp/temp
+                Directory.CreateDirectory(Path.Combine(AppData, "temp"));
             UpdateList();
         }
-        private void ShowHelp()
-        {
-            try
-            {
-                Process SysInfo = new System.Diagnostics.Process();
-                SysInfo.StartInfo.ErrorDialog = true;
-                SysInfo.StartInfo.FileName = "Help.chm";
-                SysInfo.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+
+        // Обновить список тестов
         private void UpdateList()
         {
             DirectoryInfo d = new DirectoryInfo(System.IO.Path.Combine(AppData, "pack"));//Assuming Test is your Folder
@@ -62,38 +52,16 @@ namespace TestApp
                 TestList.Items.Add(lect);
             }
         }
-        public void Unpack(string file)
-        {
-            string tempDir = System.IO.Path.Combine(AppData, "temp");
-            if (Directory.Exists(tempDir))
-                Directory.Delete(tempDir, true);
-            Directory.CreateDirectory(tempDir);
-            System.IO.Compression.ZipFile.ExtractToDirectory(file, System.IO.Path.Combine(AppData, "temp"), Encoding.GetEncoding(860));
-        }
-
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            if (TestList.SelectedIndex == -1) return;
-            string  testName = ((TextBlock)TestList.Items[TestList.SelectedIndex]).Text;
-            string path = System.IO.Path.Combine(AppData, "pack", testName + ".zip");
-            Unpack(path);
-            TestWindow test = new TestWindow(System.IO.Path.Combine(AppData, "temp"));
-            test.Show();
-            Close();
-        }
-
-        private void button2_Click(object sender, RoutedEventArgs e)
+        // Распаковка файлов теста во временную папку
+        private void UnpackFiles()
         {
             if (TestList.SelectedIndex == -1) return;
             string testName = ((TextBlock)TestList.Items[TestList.SelectedIndex]).Text;
-            string path = System.IO.Path.Combine(AppData, "pack", testName + ".zip");
-            Unpack(path);
-
-            LearnWindow test = new LearnWindow(System.IO.Path.Combine(AppData, "temp"));
-            test.Show();
-            Close();
+            string path = Path.Combine(AppData, "pack", testName + ".zip");
+            Compression.Unpack(path, tempDir);
         }
 
+        // Добавление тестов при перетаскивании
         private void TestList_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -104,23 +72,60 @@ namespace TestApp
                 foreach (string file in files)
                 {
                     if (File.Exists(file))
-                    {
-                        File.Copy(file, System.IO.Path.Combine(AppData, "pack", System.IO.Path.GetFileName(file)), true);
-                    }
-
+                        File.Copy(file, Path.Combine(AppData, "pack", Path.GetFileName(file)), true);
                 }
                 UpdateList();
             }
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            ShowHelp();
-        }
-
+        // Справка
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F1) ShowHelp();
+            if (e.Key == Key.F1) Helper.ShowHelp();
+        }
+
+        // Button listeners
+        private void StartTest_Click(object sender, RoutedEventArgs e)
+        {
+            UnpackFiles();
+            TestWindow test = new TestWindow(tempDir);
+            test.Show();
+            Close();
+        }
+
+        private void StartLearn_Click(object sender, RoutedEventArgs e)
+        {
+            UnpackFiles();
+            LearnWindow test = new LearnWindow(tempDir);
+            test.Show();
+            Close();
+        }
+
+        private void ShowHelp_Click(object sender, RoutedEventArgs e)
+        {
+            Helper.ShowHelp();
+        }
+        private void Remove_Click(object sender, RoutedEventArgs e)
+        {
+            if (TestList.SelectedIndex == -1) return;
+            string testName = ((TextBlock)TestList.Items[TestList.SelectedIndex]).Text;
+            string path = Path.Combine(AppData, "pack", testName + ".zip");
+            File.Delete(path);
+            UpdateList();
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Вопросы (*.zip)|*.zip";
+            dialog.CheckFileExists = true;
+            dialog.Multiselect = false;
+            if (dialog.ShowDialog() == true)
+            {
+                if (File.Exists(dialog.FileName))
+                    File.Copy(dialog.FileName, Path.Combine(AppData, "pack", Path.GetFileName(dialog.FileName)), true);
+                UpdateList();
+            }
         }
     }
 }
